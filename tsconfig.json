@@ -1,0 +1,14 @@
+{
+  "extends": "@tsconfig/node20/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "helpers/*": ["./src/helpers/*"],
+      "tools/*": ["./src/tools/*"],
+      "services/*": ["./src/services/*"],
+      "agents/*": ["./src/agents/*"]
+    },
+    "outDir": "./build",
+    "typeRoots": ["./env.d.ts"]
+  }
+}
