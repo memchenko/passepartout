@@ -14,14 +14,18 @@
   "license": "ISC",
   "devDependencies": {
     "@tsconfig/node20": "^20.1.4",
+    "@types/chalk": "^2.2.0",
     "@types/leveldown": "^4.0.6",
     "@types/levelup": "^5.1.5",
     "@types/lodash": "^4.17.1",
     "@types/luxon": "^3.4.2",
+    "@types/marked-terminal": "^6.1.1",
+    "@types/ora": "^3.2.0",
     "@types/prompts": "^2.4.9",
     "@typescript-eslint/eslint-plugin": "^7.9.0",
     "@typescript-eslint/parser": "^7.9.0",
     "eslint": "^8.57.0",
+    "ora": "^5.4.1",
     "prettier": "^3.2.5",
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.10",
@@ -31,6 +35,7 @@
     "@langchain/core": "^0.1.63",
     "@langchain/langgraph": "^0.0.19",
     "@langchain/openai": "^0.0.31",
+    "chalk": "^4.1.2",
     "dotenv": "^16.4.5",
     "langchain": "^0.1.37",
     "leveldown": "^6.1.1",
@@ -38,11 +43,14 @@
     "lodash": "^4.17.21",
     "lru-cache": "^10.2.2",
     "luxon": "^3.4.4",
+    "marked": "^12.0.2",
+    "marked-terminal": "^7.0.0",
     "prompts": "^2.4.2",
     "rxjs": "^7.8.1",
     "tree-cli": "^0.6.7",
     "ts-morph": "^22.0.0",
     "uuid": "^9.0.1",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "zod-to-json-schema": "^3.23.0"
   }
 }

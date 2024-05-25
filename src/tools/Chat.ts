@@ -7,7 +7,7 @@ import { UNEXPECTED_ERROR_TOOL_TEXT } from 'helpers/constants';
 
 export const chat = new DynamicStructuredTool({
   name: 'chat',
-  description: 'This tool provides a way to communicate with the user using "prompts" npm library.',
+  description: 'This tool provides a way to communicate with the user.',
   schema: z.object({
     type: z
       .enum([
@@ -24,9 +24,9 @@ export const chat = new DynamicStructuredTool({
         'date',
         'autocompleteMultiselect',
       ])
-      .optional(),
-    name: z.string(),
-    message: z.string(),
+      .optional()
+      .describe('Specify this parameter to get appropriate response.'),
+    question: z.string(),
     choices: z
       .array(
         z.object({
@@ -35,18 +35,21 @@ export const chat = new DynamicStructuredTool({
           description: z.string().optional(),
         }),
       )
-      .optional(),
+      .optional()
+      .describe(
+        'You should specify this parameter in case of list, toggle, select or multiselect type to limit user responses.',
+      ),
   }),
-  func: async ({ type = 'text', name, message, choices }) => {
+  func: async ({ type = 'text', question, choices }) => {
     try {
       const answer = await prompts({
         type,
-        name,
-        message,
+        name: 'question',
+        message: question,
         choices,
       });
 
-      return String(answer[name]);
+      return String(answer.question);
     } catch (err: unknown) {
       if (isError(err)) {
         return String(err);

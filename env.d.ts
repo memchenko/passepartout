@@ -7,6 +7,7 @@ declare module 'process' {
         BUILD_PATH: string;
         RESULT_PATH: string;
         WORKSPACE_PATH: string;
+        LOG_PATH: string;
       }
     }
   }

@@ -6,28 +6,27 @@ import * as z from 'zod';
 
 import { isError } from 'helpers/type-guards';
 import { UNEXPECTED_ERROR_TOOL_TEXT } from 'helpers/constants';
-import { getRootDirectoryTypeToPathDict } from 'helpers/dicts';
+import { getSpaceTypeToPathDict } from 'helpers/dicts';
 
 const writeFileAsync = promisify(fs.writeFile);
 
 export const writeMarkdownFile = new DynamicStructuredTool({
   name: 'write-markdown-file',
   description:
-    'This tool is the way to create a markdown file or update existing one. Can act in 2 modes: appending and overriding. Specify file name without extension.',
+    'This tool is the way to create a markdown file or override existing one. Specify file name without extension.',
   schema: z.object({
-    filePath: z.string().startsWith('./').describe('Relative path from root folder.'),
-    fileName: z.string().describe('Name of file without extension.'),
+    filePath: z.string().default('./').describe('Relative path from root folder. Should start from `./`.'),
+    fileName: z.string().describe('Name of the file without extension.'),
     content: z.string().describe('Markdown content.'),
-    isOverrideMode: z.boolean().optional().describe('Whether override content if file exist or not.'),
   }),
-  func: async ({ filePath, fileName, content, isOverrideMode }) => {
+  func: async ({ filePath, fileName, content }) => {
     try {
-      const rootPath = getRootDirectoryTypeToPathDict().result;
+      const rootPath = getSpaceTypeToPathDict().result;
       const fullPath = path.join(rootPath, filePath, `${fileName}.md`);
 
       await writeFileAsync(fullPath, content, {
         encoding: 'utf-8',
-        flag: isOverrideMode ? 'w' : 'a',
+        flag: 'w',
       });
 
       return `File written successfully: ${fullPath}`;

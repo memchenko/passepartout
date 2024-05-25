@@ -5,20 +5,22 @@ import * as z from 'zod';
 import { isError } from 'helpers/type-guards';
 import { UNEXPECTED_ERROR_TOOL_TEXT } from 'helpers/constants';
 import { searchInFile as searchInFileHelper } from 'services/search/searchInFile';
-import { getRootDirectoryTypeToPathDict } from 'helpers/dicts';
-import { possibleRootDirectories } from 'helpers/types';
+import { getSpaceTypeToPathDict } from 'helpers/dicts';
+
+const description = `This tool performs search by regex pattern in a specific file
+inside the user application space. Use it when you need to find some specific
+substring that you know is presented in the specific file.`;
 
 export const searchInFile = new DynamicStructuredTool({
   name: 'search-in-file',
-  description: 'This tool performs search by regex pattern in a file.',
+  description,
   schema: z.object({
-    filePath: z.string().startsWith('./').describe('Relative path from one of root folders.'),
-    rootDirectory: possibleRootDirectories.describe('This parameter is to specify the root folder.'),
-    pattern: z.string(),
+    filePath: z.string().default('./').describe('Relative path inside of the application space.'),
+    pattern: z.string().describe('Regex pattern to pass into JavaScript RegExp constructor.'),
   }),
-  func: async ({ filePath, pattern, rootDirectory }) => {
+  func: async ({ filePath, pattern }) => {
     try {
-      const rootPath = getRootDirectoryTypeToPathDict()[rootDirectory];
+      const rootPath = getSpaceTypeToPathDict().application;
       const fullPath = path.resolve(rootPath, filePath);
       const result = await searchInFileHelper(fullPath, pattern);
 
@@ -26,7 +28,7 @@ export const searchInFile = new DynamicStructuredTool({
         return "Haven't found any occurence";
       }
 
-      return result.map(({ filePath, line }) => `${filePath}:${line}`).join('\n');
+      return result.map(({ filePath, line }) => `application://${filePath}:${line}`).join('\n');
     } catch (err: unknown) {
       if (isError(err)) {
         return String(err);

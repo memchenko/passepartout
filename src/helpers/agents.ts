@@ -11,4 +11,5 @@ export const handleAgentAction = (agent: PossibleAgents, { tool, toolInput }: Ag
 
   process.stdout.write('\n----------------------------');
   process.stdout.write(`\n${agentTypeToSignature[agent]}\nusing tool: ${tool};\nwith input: ${toolArgs}`);
+  process.stdout.write('\n');
 };
