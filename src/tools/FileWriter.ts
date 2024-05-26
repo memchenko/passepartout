@@ -9,12 +9,11 @@ import { possibleSpaces } from 'helpers/types';
 
 const writeFileAsync = promisify(fs.writeFile);
 
-export const writeMarkdownFile = new DynamicStructuredTool({
-  name: 'write-markdown-file',
-  description:
-    'This tool is the way to create a markdown file or override existing one. Specify file name without extension.',
+export const writeFile = new DynamicStructuredTool({
+  name: 'write-file',
+  description: 'This tool is the way to create a file.',
   schema: z.object({
-    filePathSegments: z.array(z.string()).describe('Relative lodash-style array path from space folder.'),
+    filePathSegments: z.array(z.string()).describe('Relative to space folder lodash-style array path.'),
     space: possibleSpaces,
     fileName: z.string().describe('Name of the file without extension.'),
     extension: z.string().describe('Extension of the file you want to write.'),
@@ -22,7 +21,8 @@ export const writeMarkdownFile = new DynamicStructuredTool({
   }),
   func: async ({ filePathSegments, space, fileName, extension, content }) => {
     const rootPath = getSpaceTypeToPathDict()[space];
-    const fullPath = path.join(rootPath, filePathSegments.join('/'), `${fileName}.${extension}`);
+    const filePath = path.normalize(`${filePathSegments.join('/')}/${fileName}.${extension}`);
+    const fullPath = path.join(rootPath, filePath);
 
     await writeFileAsync(fullPath, content, {
       encoding: 'utf-8',

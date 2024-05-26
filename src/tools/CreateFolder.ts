@@ -16,12 +16,13 @@ export const mkdir = new DynamicStructuredTool({
   description:
     'This tool is a way to create a folder. Folder can be created inside one of root folders you have access to.',
   schema: z.object({
-    directoryPath: z.string().default('./').describe('Relative path inside one of spaces.'),
+    directoryPathSegments: z.array(z.string()).describe('Relative to space folder lodash-style array path.'),
     space: possibleSpaces.describe('This parameter specifies the space in which you want to perform the action.'),
   }),
-  func: async ({ directoryPath, space }) => {
+  func: async ({ directoryPathSegments, space }) => {
     try {
       const rootPath = getSpaceTypeToPathDict()[space];
+      const directoryPath = path.normalize(directoryPathSegments.join('/'));
       const fullPath = path.join(rootPath, directoryPath);
 
       if (!fs.existsSync(fullPath)) {

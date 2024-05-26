@@ -13,12 +13,13 @@ export const directoryTree = new DynamicStructuredTool({
   description:
     'This tool lists files inside a directory. Prefer to use this tool in the first place to get initial insights.',
   schema: z.object({
-    directoryPath: z.string().default('./').describe('Relative path inside one of spaces.'),
+    directoryPathSegments: z.array(z.string()).describe('Relative to space folder lodash-style array path.'),
     space: possibleSpaces.describe('This parameter specifies the space in which you want to perform the action.'),
   }),
-  func: async ({ directoryPath, space }) => {
+  func: async ({ directoryPathSegments, space }) => {
     try {
       const rootPath = getSpaceTypeToPathDict()[space];
+      const directoryPath = path.normalize(directoryPathSegments.join('/'));
       const fullPath = path.resolve(rootPath, directoryPath);
 
       const result = await treeCli({

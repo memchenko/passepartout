@@ -3,10 +3,10 @@ import { getExecutiveLLM, buildRunner, ErrorCodes } from './common';
 import { executorTemplate } from './prompts';
 import { assertIsNotNil } from 'helpers/type-guards';
 import { formatToOpenAITool, ChatOpenAICallOptions } from '@langchain/openai';
-import { mkdir, fileReader, writeMarkdownFile, codeRetriever, directoryTree } from 'tools/index';
+import { mkdir, fileReader, writeFile, codeRetriever, directoryTree, updateFile } from 'tools/index';
 import { writeLog } from 'helpers/log';
 
-const toolsPromise = Promise.all([mkdir, fileReader, writeMarkdownFile, codeRetriever, directoryTree]);
+const toolsPromise = Promise.all([mkdir, fileReader, writeFile, codeRetriever, directoryTree, updateFile]);
 
 export const runExecutor = buildRunner(
   async (input: string) => {

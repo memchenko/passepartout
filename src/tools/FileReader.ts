@@ -13,11 +13,12 @@ export const fileReader = new DynamicStructuredTool({
   name: 'file-reader',
   description: 'This tool displays full text of a file.',
   schema: z.object({
-    filePath: z.string().default('./').describe('Relative path inside one of spaces.'),
+    filePathSegments: z.array(z.string()).describe('Relative to space folder lodash-style array path.'),
     space: possibleSpaces.describe('This parameter specifies the space in which you want to perform the action.'),
   }),
-  func: async ({ filePath, space }) => {
+  func: async ({ filePathSegments, space }) => {
     const rootPath = getSpaceTypeToPathDict()[space];
+    const filePath = filePathSegments.join('/');
     let normalizedPath = path.normalize(filePath);
     normalizedPath = normalizedPath.startsWith('/') ? `.${normalizedPath}` : normalizedPath;
     const fullPath = path.resolve(rootPath, normalizedPath);
