@@ -1,5 +1,5 @@
+import { writeLog } from 'helpers/log';
 import { state, displayGlobalGoal, displayPreviousSummary } from './common';
-
 import { runPlanner } from './planner';
 import { runExecutor } from './executor';
 import { runSupervisor } from './supervisor';
@@ -47,12 +47,13 @@ const flow: Record<Actors, () => Promise<unknown>> = {
     return flow.summarizer();
   },
   summarizer: async () => {
-    results.summarizing = results.summarizing = await runSummarizer({
+    results.summarizing = await runSummarizer({
       task: state.globalGoal,
       action: results.planning,
       minerResponse: results.mining,
       previousSummary: state.previousSummary,
     });
+    state.previousSummary = results.summarizing;
   },
 };
 
@@ -64,7 +65,7 @@ export const iterate = async (goal: string) => {
       console.clear();
 
       displayGlobalGoal();
-      displayPreviousSummary();
+      await displayPreviousSummary();
 
       await flow.planner();
 
@@ -76,6 +77,8 @@ export const iterate = async (goal: string) => {
         return;
       }
     } finally {
+      writeLog('State after cycle', JSON.stringify(state, null, 2));
+
       state.cycles++;
 
       Object.keys(results).forEach((key) => {

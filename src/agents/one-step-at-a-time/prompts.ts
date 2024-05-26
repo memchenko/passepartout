@@ -99,7 +99,8 @@ You're a work router assistant. Your purpose is to choose who's going to act nex
 based on the goal of the project and the latest action performed.
 If the latest action performed was about researching then the found data should
 be processed by 'miner' actor, and if the latest action wasn't related to researching
-then it wouldn't make sense to process data and the next actor should be 'planner'.
+then it wouldn't make sense to process data and the next actor should be 'planner'. And
+if you think the latest action achieves the goal then select 'user'.
 Your response must be in JSON format.
 
 ## Examples

@@ -4,6 +4,7 @@ import { writeLog } from 'helpers/log';
 import { marked } from 'marked';
 import ora from 'ora';
 import { assertIsNotNil, isError, isNotNil } from 'helpers/type-guards';
+import { DISPLAYED_SUMMARY_LENGTH } from './constants';
 
 export const state = {
   globalGoal: '',
@@ -21,7 +22,7 @@ export const state = {
 
 export enum ErrorCodes {
   ResponseNil = 'Response is nil',
-  ToolFailed = "Tool wasn't selected",
+  ToolFailed = 'Action execution failed. Try again',
 }
 
 export const getCreativeLLM = () =>
@@ -48,12 +49,19 @@ export const displayGlobalGoal = () => {
 };
 
 export const displayPreviousSummary = async () => {
+  const length = state.previousSummary.length;
+  let summaryDisplayed = state.previousSummary || 'No summary yet.';
+
+  if (length > DISPLAYED_SUMMARY_LENGTH) {
+    summaryDisplayed = state.previousSummary.slice(0, DISPLAYED_SUMMARY_LENGTH);
+    summaryDisplayed += `\n... (${length - DISPLAYED_SUMMARY_LENGTH} more) ...`;
+  }
+
   displayTitle('Insights');
-  console.log(await marked.parse(state.previousSummary));
+  console.log(await marked.parse(summaryDisplayed));
 };
 
 export const displaySpinner = (text: string) => {
-  writeLog('[STARTING]', text);
   return ora({
     text: chalk.italic(text),
     spinner: 'point',
@@ -63,33 +71,36 @@ export const displaySpinner = (text: string) => {
 
 export function displaySuccess(this: ora.Ora, text: string) {
   this.succeed(chalk.reset.green(text));
-  writeLog('[SUCCESS]', text, 'success');
 }
 
 export function displayFailure(this: ora.Ora, text: string) {
   this.fail(chalk.reset.red(text));
-  writeLog('[FAILED]', text, 'error');
 }
 
 export const buildRunner = <Fn extends (...args: any[]) => Promise<string>>(
   runFn: Fn,
-  texts: {
+  textsConfig: {
     runnerName: string;
     start: string;
     success: string;
     failure: string;
+    includeResponseInSuccess?: boolean;
   },
 ) => {
   return async (...args: Parameters<Fn>) => {
-    const spinner = displaySpinner(texts.start);
+    const spinner = displaySpinner(textsConfig.start);
 
     try {
+      writeLog(`${textsConfig.runnerName}'s arguments`, JSON.stringify(args, null, 2));
       const response = await runFn(...args);
 
       assertIsNotNil(response, ErrorCodes.ResponseNil);
 
-      displaySuccess.call(spinner, texts.success);
-      writeLog(texts.success, response, 'success');
+      displaySuccess.call(
+        spinner,
+        textsConfig.includeResponseInSuccess ? `${textsConfig.success}: ${response}` : textsConfig.success,
+      );
+      writeLog(textsConfig.success, response, 'success');
 
       return response;
     } catch (err) {
@@ -98,8 +109,8 @@ export const buildRunner = <Fn extends (...args: any[]) => Promise<string>>(
         text = err.stack;
       }
 
-      displayFailure.call(spinner, texts.failure);
-      writeLog(texts.failure, text, 'error');
+      displayFailure.call(spinner, textsConfig.failure);
+      writeLog(textsConfig.failure, text, 'error');
 
       throw err;
     }

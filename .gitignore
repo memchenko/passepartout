@@ -2,4 +2,6 @@
 build/
 .vscode/
 node_modules/
-logs/
+.logs/
+.vectorstore/
+.DS_Store

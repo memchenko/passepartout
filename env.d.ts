@@ -8,6 +8,7 @@ declare module 'process' {
         RESULT_PATH: string;
         WORKSPACE_PATH: string;
         LOG_PATH: string;
+        VECTORSTORE_PATH: string;
       }
     }
   }

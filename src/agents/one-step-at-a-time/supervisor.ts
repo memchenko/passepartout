@@ -8,7 +8,7 @@ const supervisor = ChatPromptTemplate.fromTemplate(supervisorTemplate).pipe(
     properties: {
       next: {
         type: 'string',
-        enum: ['miner', 'planner'],
+        enum: ['miner', 'planner', 'user'],
       },
     },
   }),
@@ -31,5 +31,6 @@ export const runSupervisor = buildRunner(
     start: "Diciding who's next...",
     success: 'Next actor is selected.',
     failure: 'Decision failed.',
+    includeResponseInSuccess: true,
   },
 );

@@ -4,9 +4,9 @@ import { markedTerminal } from 'marked-terminal';
 
 import { iterate } from 'agents/one-step-at-a-time/index';
 
-marked.use(markedTerminal() as any);
+export const start = async () => {
+  marked.use(markedTerminal() as any);
 
-const main = async () => {
   const answer = await prompts({
     type: 'text',
     name: 'input',
@@ -15,5 +15,3 @@ const main = async () => {
 
   await iterate(answer.input);
 };
-
-main();

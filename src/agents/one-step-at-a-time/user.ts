@@ -1,6 +1,7 @@
 import prompts from 'prompts';
 import { state } from './common';
-import { closeLogStream } from 'helpers/log';
+import { closeLogStream, writeLog } from 'helpers/log';
+import { isNotNil } from 'helpers/type-guards';
 
 export const runUser = async (flow: Record<string, (...args: string[]) => Promise<unknown>>) => {
   const answer = await prompts({
@@ -23,7 +24,7 @@ export const runUser = async (flow: Record<string, (...args: string[]) => Promis
       return runEditGoal();
     }
     case 'insight': {
-      return runEditInsight();
+      return runEditInsight(flow);
     }
     case 'continue': {
       return runContinue(flow);
@@ -47,18 +48,50 @@ const runEditGoal = async () => {
       message: 'New goal',
     })
   ).response;
+  state.previousSummary = '';
+  state.cycles = 0;
 };
 
 const runContinue = async (flow: Record<string, (...args: string[]) => Promise<unknown>>) => {
-  await flow[state.results.decision]();
+  const { decision } = state.results;
+  const answer = await prompts({
+    type: 'select',
+    name: 'next',
+    message: `The assistant selected '${decision}' to be next. What do you think?`,
+    choices: [
+      {
+        title: 'Confirm',
+        value: 'confirm',
+      },
+      {
+        title: 'Miner',
+        value: 'miner',
+      },
+      {
+        title: 'Planner',
+        value: 'planner',
+      },
+    ],
+  });
+
+  const next = answer.next === 'confirm' ? decision : answer.next;
+  const fn = flow[next];
+
+  if (isNotNil(fn)) {
+    await flow[next]();
+  } else {
+    writeLog('Inexistent flow node', state.results.decision, 'warn');
+  }
 };
 
-const runEditInsight = async () => {
+const runEditInsight = async (flow: Record<string, (...args: string[]) => Promise<unknown>>) => {
   state.previousSummary = (
     await prompts({
       type: 'text',
       name: 'response',
-      message: 'New goal',
+      message: 'Updated insight',
     })
   ).response;
+
+  return flow.planner();
 };

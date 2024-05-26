@@ -4,8 +4,6 @@ import path from 'node:path';
 import { promisify } from 'node:util';
 import * as z from 'zod';
 
-import { isError } from 'helpers/type-guards';
-import { UNEXPECTED_ERROR_TOOL_TEXT } from 'helpers/constants';
 import { getSpaceTypeToPathDict } from 'helpers/dicts';
 import { possibleSpaces } from 'helpers/types';
 
@@ -19,20 +17,14 @@ export const fileReader = new DynamicStructuredTool({
     space: possibleSpaces.describe('This parameter specifies the space in which you want to perform the action.'),
   }),
   func: async ({ filePath, space }) => {
-    try {
-      const rootPath = getSpaceTypeToPathDict()[space];
-      const fullPath = path.resolve(rootPath, filePath);
-      const result = await readFileAsync(fullPath, {
-        encoding: 'utf8',
-      });
+    const rootPath = getSpaceTypeToPathDict()[space];
+    let normalizedPath = path.normalize(filePath);
+    normalizedPath = normalizedPath.startsWith('/') ? `.${normalizedPath}` : normalizedPath;
+    const fullPath = path.resolve(rootPath, normalizedPath);
+    const result = await readFileAsync(fullPath, {
+      encoding: 'utf8',
+    });
 
-      return `// Location: ${space}://${filePath}\n\n${result}`;
-    } catch (err: unknown) {
-      if (isError(err)) {
-        return String(err);
-      }
-
-      return UNEXPECTED_ERROR_TOOL_TEXT;
-    }
+    return `// Location: ${space}://${filePath}\n\n${result}`;
   },
 });

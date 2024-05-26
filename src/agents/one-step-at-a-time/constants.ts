@@ -1,0 +1,1 @@
+export const DISPLAYED_SUMMARY_LENGTH = 1000;
