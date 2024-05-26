@@ -55,4 +55,9 @@ export const closeLogStream = async () => {
   });
 };
 
+queue.next(`<style>
+pre {
+  white-space: pre-wrap;
+}
+</style>`);
 queue.next(`<h2>Date: ${DateTime.now().toISO()}</h2>`);
