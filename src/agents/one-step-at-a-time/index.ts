@@ -54,6 +54,7 @@ const flow: Record<Actors, () => Promise<unknown>> = {
       previousSummary: state.previousSummary,
     });
     state.previousSummary = results.summarizing;
+    state.startNextCycleFrom = 'planner';
   },
 };
 
@@ -67,23 +68,28 @@ export const iterate = async (goal: string) => {
       displayGlobalGoal();
       await displayPreviousSummary();
 
-      await flow.planner();
+      const fn = flow[state.startNextCycleFrom as Actors];
+
+      if (fn !== undefined) {
+        await fn();
+      }
 
       state.errors = [];
     } catch (err) {
       if (err instanceof Error) {
         state.errors.push(err.message);
         await runUser(flow);
-        return;
       }
     } finally {
       writeLog('State after cycle', JSON.stringify(state, null, 2));
 
       state.cycles++;
 
-      Object.keys(results).forEach((key) => {
-        results[key as keyof typeof results] = '';
-      });
+      if (state.startNextCycleFrom === 'planner') {
+        Object.keys(results).forEach((key) => {
+          results[key as keyof typeof results] = '';
+        });
+      }
     }
   }
 };

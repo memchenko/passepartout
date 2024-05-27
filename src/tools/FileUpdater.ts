@@ -7,9 +7,11 @@ import Diff from 'diff';
 
 import { getSpaceTypeToPathDict } from 'helpers/dicts';
 import { possibleSpaces } from 'helpers/types';
+import { isError } from 'helpers/type-guards';
 
 const writeFileAsync = promisify(fs.writeFile);
 const readFileAsync = promisify(fs.readFile);
+const lstatAsync = promisify(fs.lstat);
 
 export const updateFile = new DynamicStructuredTool({
   name: 'update-file',
@@ -23,20 +25,34 @@ export const updateFile = new DynamicStructuredTool({
   }),
   func: async ({ filePathSegments, space, patch }) => {
     const rootPath = getSpaceTypeToPathDict()[space];
-    const filePath = path.normalize(filePathSegments.join('/'));
+    let filePath = path.normalize(filePathSegments.join('/'));
+    filePath = filePath.startsWith('./') ? filePath : `./${filePath}`;
     const fullPath = path.join(rootPath, filePath);
-    const fileContent = await readFileAsync(fullPath, 'utf-8');
-    const patchedFileContent = Diff.applyPatch(fileContent, patch);
 
-    if (!patchedFileContent) {
-      throw new Error('Patching failed.');
+    try {
+      await lstatAsync(fullPath);
+
+      const fileContent = await readFileAsync(fullPath, 'utf-8');
+      const patchedFileContent = Diff.applyPatch(fileContent, patch);
+
+      if (!patchedFileContent) {
+        throw new Error();
+      }
+
+      await writeFileAsync(fullPath, patchedFileContent, {
+        encoding: 'utf-8',
+        flag: 'w',
+      });
+
+      return `File '${filePath}' updated successfully in the space '${space}'.`;
+    } catch (err) {
+      if (isError(err)) {
+        if (err.message.includes('ENOENT: no such file or directory, lstat')) {
+          throw new Error(`The file '${filePath}' doesn't exist in the '${space}' space.`);
+        }
+      }
+
+      throw new Error(`Couldn't apply diff patch to the file '${filePath}' in the '${space}' space.`);
     }
-
-    await writeFileAsync(fullPath, patchedFileContent, {
-      encoding: 'utf-8',
-      flag: 'w',
-    });
-
-    return `File updated successfully: ${fullPath}`;
   },
 });

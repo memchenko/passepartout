@@ -6,8 +6,10 @@ import * as z from 'zod';
 
 import { getSpaceTypeToPathDict } from 'helpers/dicts';
 import { possibleSpaces } from 'helpers/types';
+import { isError } from 'helpers/type-guards';
 
 const writeFileAsync = promisify(fs.writeFile);
+const lstatAsync = promisify(fs.lstat);
 
 export const writeFile = new DynamicStructuredTool({
   name: 'write-file',
@@ -21,14 +23,25 @@ export const writeFile = new DynamicStructuredTool({
   }),
   func: async ({ filePathSegments, space, fileName, extension, content }) => {
     const rootPath = getSpaceTypeToPathDict()[space];
-    const filePath = path.normalize(`${filePathSegments.join('/')}/${fileName}.${extension}`);
+    let filePath = path.normalize(`${filePathSegments.join('/')}/${fileName}.${extension}`);
+    filePath = filePath.startsWith('./') ? filePath : `./${filePath}`;
     const fullPath = path.join(rootPath, filePath);
 
-    await writeFileAsync(fullPath, content, {
-      encoding: 'utf-8',
-      flag: 'w',
-    });
+    try {
+      await lstatAsync(fullPath);
 
-    return `File written successfully: ${fullPath}`;
+      await writeFileAsync(fullPath, content, {
+        encoding: 'utf-8',
+        flag: 'w',
+      });
+
+      return `File '${filePath}' successfully written in the '${space}' space.`;
+    } catch (err) {
+      if (isError(err) && err.message.includes('ENOENT: no such file or directory, lstat')) {
+        throw new Error(`The file '${filePath}' doesn't exist in the '${space}' space.`);
+      }
+
+      throw new Error(`Couldn't write file '${filePath}' in the '${space}' space.`);
+    }
   },
 });

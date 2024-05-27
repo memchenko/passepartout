@@ -50,6 +50,7 @@ const runEditGoal = async () => {
   ).response;
   state.previousSummary = '';
   state.cycles = 0;
+  state.startNextCycleFrom = 'planner';
 };
 
 const runContinue = async (flow: Record<string, (...args: string[]) => Promise<unknown>>) => {
@@ -78,9 +79,10 @@ const runContinue = async (flow: Record<string, (...args: string[]) => Promise<u
   const fn = flow[next];
 
   if (isNotNil(fn)) {
-    await flow[next]();
+    state.startNextCycleFrom = next;
   } else {
     writeLog('Inexistent flow node', state.results.decision, 'warn');
+    state.startNextCycleFrom = 'planner';
   }
 };
 
@@ -92,6 +94,5 @@ const runEditInsight = async (flow: Record<string, (...args: string[]) => Promis
       message: 'Updated insight',
     })
   ).response;
-
-  return flow.planner();
+  state.startNextCycleFrom = 'planner';
 };

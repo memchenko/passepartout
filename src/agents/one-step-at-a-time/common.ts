@@ -11,6 +11,7 @@ export const state = {
   previousSummary: '',
   errors: [] as string[],
   cycles: 0,
+  startNextCycleFrom: 'planner',
   results: {
     planning: '',
     execution: '',
@@ -111,6 +112,7 @@ export const buildRunner = <Fn extends (...args: any[]) => Promise<string>>(
 
       displayFailure.call(spinner, textsConfig.failure);
       writeLog(textsConfig.failure, text, 'error');
+      console.log(text);
 
       throw err;
     }

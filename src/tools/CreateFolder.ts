@@ -10,6 +10,7 @@ import { getSpaceTypeToPathDict } from 'helpers/dicts';
 import { possibleSpaces } from 'helpers/types';
 
 const mkdirAsync = promisify(fs.mkdir);
+const lstatAsync = promisify(fs.lstat);
 
 export const mkdir = new DynamicStructuredTool({
   name: 'mkdir',
@@ -20,24 +21,17 @@ export const mkdir = new DynamicStructuredTool({
     space: possibleSpaces.describe('This parameter specifies the space in which you want to perform the action.'),
   }),
   func: async ({ directoryPathSegments, space }) => {
-    try {
-      const rootPath = getSpaceTypeToPathDict()[space];
-      const directoryPath = path.normalize(directoryPathSegments.join('/'));
-      const fullPath = path.join(rootPath, directoryPath);
+    const rootPath = getSpaceTypeToPathDict()[space];
+    let directoryPath = path.normalize(directoryPathSegments.join('/'));
+    directoryPath = directoryPath.startsWith('./') ? directoryPath : `./${directoryPath}`;
+    const fullPath = path.join(rootPath, directoryPath);
 
-      if (!fs.existsSync(fullPath)) {
-        await mkdirAsync(fullPath, { recursive: true });
-      } else {
-        return `Folder already exists: ${directoryPath}`;
-      }
-
-      return `Folder at ${directoryPath} has been created successfully.`;
-    } catch (err: unknown) {
-      if (isError(err)) {
-        return String(err);
-      }
-
-      return UNEXPECTED_ERROR_TOOL_TEXT;
+    if (!fs.existsSync(fullPath)) {
+      await mkdirAsync(fullPath, { recursive: true });
+    } else {
+      return `Folder already exists: ${directoryPath}`;
     }
+
+    return `Folder at ${directoryPath} has been created successfully.`;
   },
 });

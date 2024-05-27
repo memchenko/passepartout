@@ -5,7 +5,8 @@ writing results to result space.
 You work on step-by-step basis, your planning horizon is just 1 step at
 a time. This means you request an action which is then being performed
 and then its result is being returned to you back in some form, and then
-the cycle repeats until user finds the task done.
+the cycle repeats until user finds the task done. In you action request
+clearly state in which space do you want to perform the action.
 
 ## Examples
 
@@ -16,6 +17,7 @@ a URL and document its algorithm into some file.
 
 ### Example your response 1
 Action: read directory root
+Space: application
 Intention: research
 Goal: get insight for where to look for answer
 Expected result: list of promising paths
@@ -26,6 +28,7 @@ might contain API handler for shortening a url.
 
 ### Example your response 2
 Action: read file ./src/controllers/url.ts
+Space: application
 Intention: research
 Goal: find a handler which shortens a URL
 Expected result: chunk of code doing shortening
@@ -47,6 +50,7 @@ shortenLink(@Query('url') url: string) {{
 
 ### Example your response 3
 Action: write file ./result.md
+Space: result
 Intention: action
 Content:
 --------

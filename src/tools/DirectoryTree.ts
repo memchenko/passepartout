@@ -1,12 +1,15 @@
 import { DynamicStructuredTool } from '@langchain/core/tools';
 import path from 'node:path';
+import fs from 'node:fs';
 import treeCli from 'tree-cli';
 import * as z from 'zod';
+import { promisify } from 'node:util';
 
 import { isError } from 'helpers/type-guards';
-import { UNEXPECTED_ERROR_TOOL_TEXT } from 'helpers/constants';
 import { getSpaceTypeToPathDict } from 'helpers/dicts';
 import { possibleSpaces } from 'helpers/types';
+
+const lstatAsync = promisify(fs.lstat);
 
 export const directoryTree = new DynamicStructuredTool({
   name: 'directory-tree',
@@ -17,10 +20,13 @@ export const directoryTree = new DynamicStructuredTool({
     space: possibleSpaces.describe('This parameter specifies the space in which you want to perform the action.'),
   }),
   func: async ({ directoryPathSegments, space }) => {
+    const rootPath = getSpaceTypeToPathDict()[space];
+    let directoryPath = path.normalize(directoryPathSegments.join('/'));
+    directoryPath = directoryPath.startsWith('./') ? directoryPath : `./${directoryPath}`;
+    const fullPath = path.resolve(rootPath, directoryPath);
+
     try {
-      const rootPath = getSpaceTypeToPathDict()[space];
-      const directoryPath = path.normalize(directoryPathSegments.join('/'));
-      const fullPath = path.resolve(rootPath, directoryPath);
+      await lstatAsync(fullPath);
 
       const result = await treeCli({
         base: fullPath,
@@ -28,12 +34,12 @@ export const directoryTree = new DynamicStructuredTool({
       });
 
       return result.report;
-    } catch (err: unknown) {
-      if (isError(err)) {
-        return String(err);
+    } catch (err) {
+      if (isError(err) && err.message.includes('ENOENT: no such file or directory, lstat')) {
+        throw new Error(`The file '${directoryPath}' doesn't exist in the '${space}' space.`);
       }
 
-      return UNEXPECTED_ERROR_TOOL_TEXT;
+      throw new Error(`Couldn't create directory tree of '${directoryPath}' in the '${space}' space.`);
     }
   },
 });

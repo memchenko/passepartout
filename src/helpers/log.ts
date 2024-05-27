@@ -7,9 +7,16 @@ import { concatMap } from 'rxjs/operators';
 const queue = new Subject<string>();
 
 const date = DateTime.now();
-const logFilePath = path.join(process.env.LOG_PATH, `${date.toMillis()}.html`);
+const logsViewerPath = path.join(process.env.LOG_PATH, `index.html`);
+const logFileName = `${date.toMillis()}.html`;
+const logFilePath = path.join(process.env.LOG_PATH, logFileName);
+
+fs.writeFileSync(logsViewerPath, `<a href="./${logFileName}">${date.toISO()}</a>`, {
+  flag: 'a',
+});
+
 const logStream = fs.createWriteStream(logFilePath, {
-  flags: 'w+',
+  flags: 'w',
 });
 
 const sub = queue

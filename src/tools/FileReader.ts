@@ -6,8 +6,10 @@ import * as z from 'zod';
 
 import { getSpaceTypeToPathDict } from 'helpers/dicts';
 import { possibleSpaces } from 'helpers/types';
+import { isError } from 'helpers/type-guards';
 
 const readFileAsync = promisify(fs.readFile);
+const lstatAsync = promisify(fs.lstat);
 
 export const fileReader = new DynamicStructuredTool({
   name: 'file-reader',
@@ -18,14 +20,25 @@ export const fileReader = new DynamicStructuredTool({
   }),
   func: async ({ filePathSegments, space }) => {
     const rootPath = getSpaceTypeToPathDict()[space];
-    const filePath = filePathSegments.join('/');
-    let normalizedPath = path.normalize(filePath);
-    normalizedPath = normalizedPath.startsWith('/') ? `.${normalizedPath}` : normalizedPath;
-    const fullPath = path.resolve(rootPath, normalizedPath);
-    const result = await readFileAsync(fullPath, {
-      encoding: 'utf8',
-    });
+    let filePath = path.normalize(filePathSegments.join('/'));
+    filePath = filePath.startsWith('./') ? filePath : `./${filePath}`;
 
-    return `// Location: ${space}://${filePath}\n\n${result}`;
+    try {
+      const fullPath = path.resolve(rootPath, filePath);
+
+      await lstatAsync(fullPath);
+
+      const result = await readFileAsync(fullPath, {
+        encoding: 'utf8',
+      });
+
+      return `// Location: ${space}://${filePath}\n\n${result}`;
+    } catch (err) {
+      if (isError(err) && err.message.includes('ENOENT: no such file or directory, lstat')) {
+        throw new Error(`The file '${filePath}' doesn't exist in the '${space}' space.`);
+      }
+
+      throw new Error(`Couldn't read file '${filePath}' in the '${space}' space.`);
+    }
   },
 });
