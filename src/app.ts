@@ -2,7 +2,7 @@ import prompts from 'prompts';
 import { marked } from 'marked';
 import { markedTerminal } from 'marked-terminal';
 
-import { iterate } from 'agents/one-step-at-a-time/index';
+import { iterate } from 'agents/documenter/index';
 
 export const start = async () => {
   marked.use(markedTerminal() as any);
