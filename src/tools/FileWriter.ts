@@ -9,7 +9,6 @@ import { possibleSpaces } from 'helpers/types';
 import { isError } from 'helpers/type-guards';
 
 const writeFileAsync = promisify(fs.writeFile);
-const lstatAsync = promisify(fs.lstat);
 
 export const writeFile = new DynamicStructuredTool({
   name: 'write-file',
@@ -28,8 +27,6 @@ export const writeFile = new DynamicStructuredTool({
     const fullPath = path.join(rootPath, filePath);
 
     try {
-      await lstatAsync(fullPath);
-
       await writeFileAsync(fullPath, content, {
         encoding: 'utf-8',
         flag: 'w',
@@ -37,8 +34,8 @@ export const writeFile = new DynamicStructuredTool({
 
       return `File '${filePath}' successfully written in the '${space}' space.`;
     } catch (err) {
-      if (isError(err) && err.message.includes('ENOENT: no such file or directory, lstat')) {
-        throw new Error(`The file '${filePath}' doesn't exist in the '${space}' space.`);
+      if (isError(err)) {
+        throw err;
       }
 
       throw new Error(`Couldn't write file '${filePath}' in the '${space}' space.`);
