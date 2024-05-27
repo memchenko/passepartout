@@ -1,15 +1,14 @@
 import { DynamicStructuredTool } from '@langchain/core/tools';
 import fs from 'node:fs';
-import path from 'node:path';
 import { promisify } from 'node:util';
 import * as z from 'zod';
 import { ChatOpenAI } from '@langchain/openai';
 import { ChatPromptTemplate } from '@langchain/core/prompts';
 import { StringOutputParser } from '@langchain/core/output_parsers';
 
-import { getSpaceTypeToPathDict } from 'helpers/dicts';
 import { possibleSpaces } from 'helpers/types';
 import { isError } from 'helpers/type-guards';
+import { getPaths } from 'helpers/paths';
 
 const writeFileAsync = promisify(fs.writeFile);
 const readFileAsync = promisify(fs.readFile);
@@ -67,10 +66,7 @@ export const updateFile = new DynamicStructuredTool({
     space: possibleSpaces.describe('The space in which the file is located.'),
   }),
   func: async ({ filePathSegments, space, updates }) => {
-    const rootPath = getSpaceTypeToPathDict()[space];
-    let filePath = path.normalize(filePathSegments.join('/'));
-    filePath = filePath.startsWith('./') ? filePath : `./${filePath}`;
-    const fullPath = path.join(rootPath, filePath);
+    const { fullPath, relativePath } = getPaths(space, filePathSegments);
 
     try {
       await lstatAsync(fullPath);
@@ -85,17 +81,17 @@ export const updateFile = new DynamicStructuredTool({
       });
 
       return `
-File '${filePath}' updated successfully in the space '${space}'.
+File '${relativePath}' updated successfully in the space '${space}'.
 \n\n ## New content of the file is:
 \n\`\`\`${newContent}\`\`\``;
     } catch (err) {
       if (isError(err)) {
         if (err.message.includes('ENOENT: no such file or directory, lstat')) {
-          throw new Error(`The file '${filePath}' doesn't exist in the '${space}' space.`);
+          throw new Error(`The file '${relativePath}' doesn't exist in the '${space}' space.`);
         }
       }
 
-      throw new Error(`Couldn't apply updates to the file '${filePath}' in the '${space}' space.`);
+      throw new Error(`Couldn't apply updates to the file '${relativePath}' in the '${space}' space.`);
     }
   },
 });

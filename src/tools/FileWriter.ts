@@ -1,12 +1,11 @@
 import { DynamicStructuredTool } from '@langchain/core/tools';
 import fs from 'node:fs';
-import path from 'node:path';
 import { promisify } from 'node:util';
 import * as z from 'zod';
 
-import { getSpaceTypeToPathDict } from 'helpers/dicts';
 import { possibleSpaces } from 'helpers/types';
 import { isError } from 'helpers/type-guards';
+import { getPaths } from 'helpers/paths';
 
 const writeFileAsync = promisify(fs.writeFile);
 
@@ -21,10 +20,7 @@ export const writeFile = new DynamicStructuredTool({
     content: z.string().describe('Content of the file.'),
   }),
   func: async ({ filePathSegments, space, fileName, extension, content }) => {
-    const rootPath = getSpaceTypeToPathDict()[space];
-    let filePath = path.normalize(`${filePathSegments.join('/')}/${fileName}.${extension}`);
-    filePath = filePath.startsWith('./') ? filePath : `./${filePath}`;
-    const fullPath = path.join(rootPath, filePath);
+    const { fullPath, relativePath } = getPaths(space, [...filePathSegments, `${fileName}.${extension}`]);
 
     try {
       await writeFileAsync(fullPath, content, {
@@ -32,13 +28,13 @@ export const writeFile = new DynamicStructuredTool({
         flag: 'w',
       });
 
-      return `File '${filePath}' successfully written in the '${space}' space.`;
+      return `File '${relativePath}' successfully written in the '${space}' space.`;
     } catch (err) {
       if (isError(err)) {
         throw err;
       }
 
-      throw new Error(`Couldn't write file '${filePath}' in the '${space}' space.`);
+      throw new Error(`Couldn't write file '${relativePath}' in the '${space}' space.`);
     }
   },
 });
