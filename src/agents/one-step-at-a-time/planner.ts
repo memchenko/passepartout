@@ -9,13 +9,15 @@ export const planner = ChatPromptTemplate.fromTemplate(plannerTemplate)
   .pipe(new StringOutputParser());
 
 export const runPlanner = buildRunner(
-  ({ task, insights, cycle, errors }: { task: string; insights: string; cycle: number; errors: string[] }) => {
-    return planner.invoke({
-      task,
-      cycle: String(cycle),
-      insights: insights || 'There are no insights yet',
-      error: errors.length > 0 ? errors.map(counted).join('\n') : 'No errors.',
-    });
+  async ({ task, insights, cycle, errors }: { task: string; insights: string; cycle: number; errors: string[] }) => {
+    return {
+      response: await planner.invoke({
+        task,
+        cycle: String(cycle),
+        insights: insights || 'There are no insights yet',
+        error: errors.length > 0 ? errors.map(counted).join('\n') : 'No errors.',
+      }),
+    };
   },
   {
     runnerName: 'Planner',

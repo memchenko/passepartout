@@ -38,7 +38,10 @@ export const runExecutor = buildRunner(
 
     writeLog('Tool call', JSON.stringify(toolCall, null, 2));
 
-    return tool.invoke(toolCall.args);
+    return {
+      response: await tool.invoke(toolCall.args),
+      successPostfix: tool.name,
+    };
   },
   {
     runnerName: 'Executor',

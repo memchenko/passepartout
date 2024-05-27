@@ -78,14 +78,18 @@ export function displayFailure(this: ora.Ora, text: string) {
   this.fail(chalk.reset.red(text));
 }
 
-export const buildRunner = <Fn extends (...args: any[]) => Promise<string>>(
+export const buildRunner = <
+  Fn extends (...args: any[]) => Promise<{
+    response: string;
+    successPostfix?: string;
+  }>,
+>(
   runFn: Fn,
   textsConfig: {
     runnerName: string;
     start: string;
     success: string;
     failure: string;
-    includeResponseInSuccess?: boolean;
   },
 ) => {
   return async (...args: Parameters<Fn>) => {
@@ -93,14 +97,11 @@ export const buildRunner = <Fn extends (...args: any[]) => Promise<string>>(
 
     try {
       writeLog(`${textsConfig.runnerName}'s arguments`, JSON.stringify(args, null, 2));
-      const response = await runFn(...args);
+      const { response, successPostfix } = await runFn(...args);
 
       assertIsNotNil(response, ErrorCodes.ResponseNil);
 
-      displaySuccess.call(
-        spinner,
-        textsConfig.includeResponseInSuccess ? `${textsConfig.success}: ${response}` : textsConfig.success,
-      );
+      displaySuccess.call(spinner, successPostfix ? `${textsConfig.success}: ${successPostfix}` : textsConfig.success);
       writeLog(textsConfig.success, response, 'success');
 
       return response;

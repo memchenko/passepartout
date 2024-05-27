@@ -11,7 +11,7 @@ const logsViewerPath = path.join(process.env.LOG_PATH, `index.html`);
 const logFileName = `${date.toMillis()}.html`;
 const logFilePath = path.join(process.env.LOG_PATH, logFileName);
 
-fs.writeFileSync(logsViewerPath, `<a href="./${logFileName}">${date.toISO()}</a>`, {
+fs.writeFileSync(logsViewerPath, `<div><a href="./${logFileName}">${date.toISO()}</a></div>`, {
   flag: 'a',
 });
 

@@ -8,7 +8,7 @@ const summarizer = ChatPromptTemplate.fromTemplate(summarizerTemplate)
   .pipe(new StringOutputParser());
 
 export const runSummarizer = buildRunner(
-  ({
+  async ({
     task,
     action,
     minerResponse,
@@ -19,12 +19,14 @@ export const runSummarizer = buildRunner(
     minerResponse: string;
     previousSummary: string;
   }) => {
-    return summarizer.invoke({
-      task,
-      action,
-      result: minerResponse,
-      summary: previousSummary || 'No summary exists yet.',
-    });
+    return {
+      response: await summarizer.invoke({
+        task,
+        action,
+        result: minerResponse,
+        summary: previousSummary || 'No summary exists yet.',
+      }),
+    };
   },
   {
     runnerName: 'Summarizer',

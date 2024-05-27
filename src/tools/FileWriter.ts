@@ -13,7 +13,7 @@ const lstatAsync = promisify(fs.lstat);
 
 export const writeFile = new DynamicStructuredTool({
   name: 'write-file',
-  description: 'This tool is the way to create a file.',
+  description: 'This tool is the way to create a file. Whenever you need to create a file from scratch use this tool.',
   schema: z.object({
     filePathSegments: z.array(z.string()).describe('Relative to space folder lodash-style array path.'),
     space: possibleSpaces,

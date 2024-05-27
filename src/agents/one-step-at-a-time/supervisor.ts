@@ -24,13 +24,15 @@ export const runSupervisor = buildRunner(
       next = supervisorResponse.next;
     }
 
-    return next;
+    return {
+      response: next,
+      successPostfix: next,
+    };
   },
   {
     runnerName: 'Supervisor',
     start: "Diciding who's next...",
     success: 'Next actor is selected.',
     failure: 'Decision failed.',
-    includeResponseInSuccess: true,
   },
 );

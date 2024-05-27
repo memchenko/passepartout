@@ -6,8 +6,10 @@ import { minerTemplate } from './prompts';
 const miner = ChatPromptTemplate.fromTemplate(minerTemplate).pipe(getCreativeLLM()).pipe(new StringOutputParser());
 
 export const runMiner = buildRunner(
-  (task: string, action: string, actionResult: string) => {
-    return miner.invoke({ task, action, result: actionResult });
+  async (task: string, action: string, actionResult: string) => {
+    return {
+      response: await miner.invoke({ task, action, result: actionResult }),
+    };
   },
   {
     runnerName: 'Miner',
