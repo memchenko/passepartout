@@ -1,18 +1,8 @@
 import * as z from 'zod';
 
-export const possibleAgentsSchema = z.enum(['manager', 'analyst']);
+export const PROJECT_SPACE = 'project';
+export const RESULT_SPACE = 'result';
 
-export const possibleSpaces = z.enum(['result', 'application']);
-
-export type PossibleAgents = z.infer<typeof possibleAgentsSchema>;
+export const possibleSpaces = z.enum([RESULT_SPACE, PROJECT_SPACE]);
 
 export type PossibleSpaces = z.infer<typeof possibleSpaces>;
-
-export const internalMessageSchema = z.object({
-  recipient: possibleAgentsSchema.or(z.literal('all')),
-  topic: z.string().optional(),
-  message: z.string(),
-  signer: possibleAgentsSchema,
-});
-
-export type InternalMessage = z.infer<typeof internalMessageSchema>;

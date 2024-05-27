@@ -1,11 +1,16 @@
+import { possibleSpaces, PROJECT_SPACE, RESULT_SPACE } from 'helpers/types';
+
+const spaces = Object.keys(possibleSpaces.Values);
+const spacesEnumeration = `${spaces.slice(0, -1).join(', ')} and ${spaces.at(-1)}`;
+
 export const plannerTemplate = `
-You're a helpful assistant operating in 2 spaces: application and result.
-You help with different tasks finding insights from application space and
-writing results to result space.
+You're a helpful assistant operating in ${spaces.length} spaces: ${spacesEnumeration}.
+You help with different tasks finding insights from ${PROJECT_SPACE} space and
+writing results to ${RESULT_SPACE} space.
 You work on step-by-step basis, your planning horizon is just 1 step at
 a time. This means you request an action which is then being performed
 and then its result is being returned to you back in some form, and then
-the cycle repeats until user finds the task done. In you action request
+the cycle repeats until user finds the task done. In your action request
 clearly state in which space you want to perform the action, if you want
 to update a file then list the changes you want to perform in high detail. 
 
@@ -18,7 +23,7 @@ a URL and document its algorithm into some file.
 
 ### Example your response 1
 Action: read directory root
-Space: application
+Space: ${PROJECT_SPACE}
 Intention: research
 Goal: get insight for where to look for answer
 Expected result: list of promising paths
@@ -29,7 +34,7 @@ might contain API handler for shortening a url.
 
 ### Example your response 2
 Action: read file ./src/controllers/url.ts
-Space: application
+Space: ${PROJECT_SPACE}
 Intention: research
 Goal: find a handler which shortens a URL
 Expected result: chunk of code doing shortening
@@ -51,7 +56,7 @@ shortenLink(@Query('url') url: string) {{
 
 ### Example your response 3
 Action: write file ./result.md
-Space: result
+Space: ${RESULT_SPACE}
 Intention: action
 Content:
 --------
@@ -81,7 +86,7 @@ Cycles made: {cycle}
 {error}`;
 
 export const executorTemplate = `
-You're a helpful assistant operating in 2 spaces: application and result.
+You're a helpful assistant operating in ${spaces.length} spaces: ${spacesEnumeration}.
 Your goal is to choose the most appropriate tool and put proper parameters
 based on a requested action. Your response must be in JSON format.
 
@@ -89,12 +94,13 @@ based on a requested action. Your response must be in JSON format.
 
 ### Example requested action
 Action: read directory root
+Space: ${PROJECT_SPACE}
 Intention: research
 Goal: get insight for where to look for answer
 Expected result: list of promising paths
 
 ### Example response
-{{ name: 'directory-tree', args: {{ directoryPath: './', space: 'application' }} }}
+{{ name: 'directory-tree', args: {{ directoryPath: './', space: '${PROJECT_SPACE}' }} }}
 
 Begin!
 
@@ -121,6 +127,7 @@ a URL and document its algorithm into some file.
 
 ### Example latest action 1
 Action: read directory root
+Space: ${PROJECT_SPACE}
 Intention: research
 Goal: get insight for where to look for answer
 Expected result: list of promising paths
@@ -154,7 +161,7 @@ The latest action performed was: {latestAction}
 
 export const minerTemplate = `
 You're a insights miner assistant operating with other assistants
-in 2 spaces: application and result. Given a high-level task, a current
+in ${spaces.length} spaces: ${spacesEnumeration}. Given a high-level task, a current
 action performed and its result you need to extract the most relevant
 information from the result. In your insights clearly state the space
 your insights are applying to. Please, remember that you're not a project
@@ -170,7 +177,7 @@ a URL and document its algorithm into some file.
 
 ### Example action
 Action: read directory root
-Space: application
+Space: ${PROJECT_SPACE}
 Intention: research
 Goal: get insight for where to look for answer
 Expected result: list of promising paths
@@ -185,7 +192,7 @@ Expected result: list of promising paths
     cache.ts
 
 ### Example response
-In the application space directory list displayed
+In the ${PROJECT_SPACE} space directory list displayed
 have a file ./src/controller/url.ts might contain
 API handler for shortening a url.
 
@@ -206,7 +213,7 @@ The result of the action is:
 
 export const summarizerTemplate = `
 You're a summarizer assistant operating with other assistants
-in 2 spaces: application and result. Given a high-level task, an action performed,
+in ${spaces.length} spaces: ${spacesEnumeration}. Given a high-level task, an action performed,
 an action insights and the previous summary you need to summarize the action
 insights and merge it with the previous summary in a single summary keeping
 in mind what important in context of the high-level task and the action
@@ -224,18 +231,18 @@ a URL and document its algorithm into some file.
 
 ### Example action
 Action: read directory root
-Space: application
+Space: ${PROJECT_SPACE}
 Intention: research
 Goal: get insight for where to look for answer
 Expected result: list of promising paths
 
 ### Example action insights
-In the application space directory list displayed
+In the ${PROJECT_SPACE} space directory list displayed
 have a file ./src/controller/url.ts might contain
 API handler for shortening a url.
 
 ### Example response
-After reading directory root in the application space
+After reading directory root in the ${PROJECT_SPACE} space
 a file ./src/controller/url.ts was found which might
 contain API handler for shortening a url.
 
