@@ -1,5 +1,3 @@
-import { InternalMessage } from 'helpers/types';
-
 export const counted = (value: string, index: number) => {
   return `${index + 1}.\n${value}`;
 };
@@ -43,18 +41,3 @@ export const formatNote = asLabeledList.bind(null, [
   ['title', 'Title'],
   ['text', 'Text'],
 ]);
-
-export const formatMessage = (message: InternalMessage) => {
-  const prefix = 'New message from your AI teammate:\n\n';
-  const content = asLabeledList(
-    [
-      ['signer', 'From'],
-      ['recipient', 'To'],
-      ['topic', 'Topic'],
-      ['message', 'Message'],
-    ],
-    message,
-  );
-
-  return prefix + content;
-};

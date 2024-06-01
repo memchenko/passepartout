@@ -3,12 +3,14 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
+      "*": ["*/index"],
       "helpers/*": ["./src/helpers/*"],
       "tools/*": ["./src/tools/*"],
       "services/*": ["./src/services/*"],
-      "agents/*": ["./src/agents/*"]
+      "actors/*": ["./src/actors/*"],
+      "cli/*": ["./src/cli/*"]
     },
     "outDir": "./build",
-    "typeRoots": ["./env.d.ts"]
+    "typeRoots": ["./env.d.ts", "./common.d.ts"]
   }
 }

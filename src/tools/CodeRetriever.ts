@@ -6,7 +6,7 @@ import { DirectoryLoader } from 'langchain/document_loaders/fs/directory';
 import { TextLoader } from 'langchain/document_loaders/fs/text';
 
 const loader = new DirectoryLoader(
-  process.env.APP_PATH,
+  process.env.PROJECT_PATH,
   {
     '.js': (path) => new TextLoader(path),
     '.json': (path) => new TextLoader(path),
@@ -24,7 +24,7 @@ const description = `Search for information about the codebase. Use this tool
 to search the codebase using natural language. It will give you the most
 similar to your query string results.`;
 
-const buildCodeRetriever = async () => {
+export const buildCodeRetriever = async () => {
   const docs = await loader.load();
   const texts = await javascriptSplitter.splitDocuments(docs);
 
@@ -44,5 +44,3 @@ const buildCodeRetriever = async () => {
     description,
   });
 };
-
-export const codeRetriever = buildCodeRetriever();

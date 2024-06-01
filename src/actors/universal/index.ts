@@ -1,11 +1,12 @@
 import { writeLog } from 'helpers/log';
-import { state, displayGlobalGoal, displayPreviousSummary } from './common';
+import { displayGlobalGoal, displayPreviousSummary } from './common';
 import { runPlanner } from './planner';
 import { runExecutor } from './executor';
 import { runSupervisor } from './supervisor';
 import { runMiner } from './miner';
 import { runSummarizer } from './summarizer';
 import { runUser } from './user';
+import { state, resetState } from './state';
 
 const { results } = state;
 
@@ -27,9 +28,11 @@ const flow: Record<Actors, () => Promise<unknown>> = {
     return flow.supervisor();
   },
   supervisor: async () => {
-    results.decision = await runSupervisor(state.globalGoal, results.execution);
+    const { globalGoal, settings, cycles } = state;
 
-    if (state.cycles % 3 === 2) {
+    results.decision = await runSupervisor(globalGoal, results.execution);
+
+    if (cycles % settings.controlFrequency === settings.controlFrequency - 1) {
       return flow.user();
     }
 
@@ -58,8 +61,11 @@ const flow: Record<Actors, () => Promise<unknown>> = {
   },
 };
 
-export const iterate = async (goal: string) => {
+export const run = async (goal: string, settings: Partial<(typeof state)['settings']> = {}) => {
+  resetState();
+
   state.globalGoal = goal;
+  Object.assign(state.settings, settings);
 
   while (true) {
     try {

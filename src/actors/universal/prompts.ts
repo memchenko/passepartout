@@ -1,12 +1,12 @@
-import { possibleSpaces, PROJECT_SPACE, RESULT_SPACE } from 'helpers/types';
+import { possibleSpaces, KNOWLEDGE_SPACE, WORKSPACE_SPACE } from 'helpers/types';
 
 const spaces = Object.keys(possibleSpaces.Values);
 const spacesEnumeration = `${spaces.slice(0, -1).join(', ')} and ${spaces.at(-1)}`;
 
 export const plannerTemplate = `
 You're a helpful assistant operating in ${spaces.length} spaces: ${spacesEnumeration}.
-You help with different tasks finding insights from ${PROJECT_SPACE} space and
-writing results to ${RESULT_SPACE} space.
+You help with different tasks finding insights from ${KNOWLEDGE_SPACE} space and
+writing results to ${WORKSPACE_SPACE} space.
 You work on step-by-step basis, your planning horizon is just 1 step at
 a time. This means you request an action which is then being performed
 and then its result is being returned to you back in some form, and then
@@ -23,7 +23,7 @@ a URL and document its algorithm into some file.
 
 ### Example your response 1
 Action: read directory root
-Space: ${PROJECT_SPACE}
+Space: ${KNOWLEDGE_SPACE}
 Intention: research
 Goal: get insight for where to look for answer
 Expected result: list of promising paths
@@ -34,7 +34,7 @@ might contain API handler for shortening a url.
 
 ### Example your response 2
 Action: read file ./src/controllers/url.ts
-Space: ${PROJECT_SPACE}
+Space: ${KNOWLEDGE_SPACE}
 Intention: research
 Goal: find a handler which shortens a URL
 Expected result: chunk of code doing shortening
@@ -56,7 +56,7 @@ shortenLink(@Query('url') url: string) {{
 
 ### Example your response 3
 Action: write file ./result.md
-Space: ${RESULT_SPACE}
+Space: ${WORKSPACE_SPACE}
 Intention: action
 Content:
 --------
@@ -94,13 +94,13 @@ based on a requested action. Your response must be in JSON format.
 
 ### Example requested action
 Action: read directory root
-Space: ${PROJECT_SPACE}
+Space: ${KNOWLEDGE_SPACE}
 Intention: research
 Goal: get insight for where to look for answer
 Expected result: list of promising paths
 
 ### Example response
-{{ name: 'directory-tree', args: {{ directoryPath: './', space: '${PROJECT_SPACE}' }} }}
+{{ name: 'directory-tree', args: {{ directoryPath: './', space: '${KNOWLEDGE_SPACE}' }} }}
 
 Begin!
 
@@ -127,7 +127,7 @@ a URL and document its algorithm into some file.
 
 ### Example latest action 1
 Action: read directory root
-Space: ${PROJECT_SPACE}
+Space: ${KNOWLEDGE_SPACE}
 Intention: research
 Goal: get insight for where to look for answer
 Expected result: list of promising paths
@@ -177,7 +177,7 @@ a URL and document its algorithm into some file.
 
 ### Example action
 Action: read directory root
-Space: ${PROJECT_SPACE}
+Space: ${KNOWLEDGE_SPACE}
 Intention: research
 Goal: get insight for where to look for answer
 Expected result: list of promising paths
@@ -192,7 +192,7 @@ Expected result: list of promising paths
     cache.ts
 
 ### Example response
-In the ${PROJECT_SPACE} space directory list displayed
+In the ${KNOWLEDGE_SPACE} space directory list displayed
 have a file ./src/controller/url.ts might contain
 API handler for shortening a url.
 
@@ -231,18 +231,18 @@ a URL and document its algorithm into some file.
 
 ### Example action
 Action: read directory root
-Space: ${PROJECT_SPACE}
+Space: ${KNOWLEDGE_SPACE}
 Intention: research
 Goal: get insight for where to look for answer
 Expected result: list of promising paths
 
 ### Example action insights
-In the ${PROJECT_SPACE} space directory list displayed
+In the ${KNOWLEDGE_SPACE} space directory list displayed
 have a file ./src/controller/url.ts might contain
 API handler for shortening a url.
 
 ### Example response
-After reading directory root in the ${PROJECT_SPACE} space
+After reading directory root in the ${KNOWLEDGE_SPACE} space
 a file ./src/controller/url.ts was found which might
 contain API handler for shortening a url.
 

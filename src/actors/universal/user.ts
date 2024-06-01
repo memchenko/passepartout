@@ -1,5 +1,5 @@
 import prompts from 'prompts';
-import { state } from './common';
+import { state } from './state';
 import { closeLogStream, writeLog } from 'helpers/log';
 import { isNotNil } from 'helpers/type-guards';
 

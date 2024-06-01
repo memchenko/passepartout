@@ -5,21 +5,7 @@ import { marked } from 'marked';
 import ora from 'ora';
 import { assertIsNotNil, isError, isNotNil } from 'helpers/type-guards';
 import { DISPLAYED_SUMMARY_LENGTH } from './constants';
-
-export const state = {
-  globalGoal: '',
-  previousSummary: '',
-  errors: [] as string[],
-  cycles: 0,
-  startNextCycleFrom: 'planner',
-  results: {
-    planning: '',
-    execution: '',
-    decision: '',
-    mining: '',
-    summarizing: '',
-  },
-};
+import { state } from './state';
 
 export enum ErrorCodes {
   ResponseNil = 'Response is nil',
