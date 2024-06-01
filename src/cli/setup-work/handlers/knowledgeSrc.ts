@@ -3,8 +3,7 @@ import { render } from 'cli/setup-work/common';
 import { state } from 'cli/setup-work/state';
 import { UniversalActor } from 'cli/setup-work/types';
 import { runTerminalEditor } from 'helpers/terminalEditor';
-import { urlSchema, knowledgeSpacePathSchema } from 'helpers/types';
-import { assertIsNotNil, assertMatchSchema } from 'helpers/type-guards';
+import { assertIsNotNil } from 'helpers/type-guards';
 
 export const processKnowledgeSrc = async (): Promise<void> => {
   let option: knowledgeSrc.PossibleOptions;
