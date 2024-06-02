@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import forEach from 'lodash/forEach';
 import { state } from './state';
-import { assertIsNotNil } from 'helpers/type-guards';
+import { assertIsNotNil } from 'lib/type-guards';
 
 const variablesRegex = /\{[a-zA-Z0-9_]+\}/g;
 

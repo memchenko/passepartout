@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { state } from 'cli/setup-work/state';
-import { assertIsNotNil } from 'helpers/type-guards';
+import { assertIsNotNil } from 'lib/type-guards';
 import * as pathsMenu from 'cli/setup-work/menus/paths';
 import { render } from 'cli/setup-work/common';
 

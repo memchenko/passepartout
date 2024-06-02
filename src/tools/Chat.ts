@@ -2,8 +2,8 @@ import { DynamicStructuredTool } from '@langchain/core/tools';
 import prompts from 'prompts';
 import * as z from 'zod';
 
-import { isError } from 'helpers/type-guards';
-import { UNEXPECTED_ERROR_TOOL_TEXT } from 'helpers/constants';
+import { isError } from 'lib/type-guards';
+import { UNEXPECTED_ERROR_TOOL_TEXT } from 'lib/constants';
 
 export const chat = new DynamicStructuredTool({
   name: 'chat',

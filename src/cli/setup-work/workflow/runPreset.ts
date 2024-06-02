@@ -1,5 +1,5 @@
 import { state } from 'cli/setup-work/state';
-import { assertIsNotNil, assertHasProperty } from 'helpers/type-guards';
+import { assertIsNotNil, assertHasProperty } from 'lib/type-guards';
 import * as universalActor from 'actors/universal';
 import { applyVariables } from 'cli/setup-work/common';
 

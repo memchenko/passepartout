@@ -6,9 +6,9 @@ import { ChatOpenAI } from '@langchain/openai';
 import { ChatPromptTemplate } from '@langchain/core/prompts';
 import { StringOutputParser } from '@langchain/core/output_parsers';
 
-import { possibleSpaces } from 'helpers/types';
-import { isError } from 'helpers/type-guards';
-import { getPaths } from 'helpers/paths';
+import { possibleSpaces } from 'lib/types';
+import { isError } from 'lib/type-guards';
+import { getPaths } from 'lib/paths';
 
 const writeFileAsync = promisify(fs.writeFile);
 const readFileAsync = promisify(fs.readFile);

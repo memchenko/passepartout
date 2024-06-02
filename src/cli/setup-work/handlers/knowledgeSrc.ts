@@ -2,8 +2,8 @@ import * as knowledgeSrc from 'cli/setup-work/menus/knowledge-src';
 import { render } from 'cli/setup-work/common';
 import { state } from 'cli/setup-work/state';
 import { UniversalPreset } from 'cli/setup-work/types';
-import { runTerminalEditor } from 'helpers/terminalEditor';
-import { assertIsNotNil } from 'helpers/type-guards';
+import { runTerminalEditor } from 'lib/terminalEditor';
+import { assertIsNotNil } from 'lib/type-guards';
 
 export const processKnowledgeSrc = async (): Promise<void> => {
   let option: knowledgeSrc.PossibleOptions;

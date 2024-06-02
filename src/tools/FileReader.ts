@@ -3,9 +3,9 @@ import fs from 'node:fs';
 import { promisify } from 'node:util';
 import * as z from 'zod';
 
-import { possibleSpaces } from 'helpers/types';
-import { isError } from 'helpers/type-guards';
-import { getPaths } from 'helpers/paths';
+import { possibleSpaces } from 'lib/types';
+import { isError } from 'lib/type-guards';
+import { getPaths } from 'lib/paths';
 
 const readFileAsync = promisify(fs.readFile);
 const lstatAsync = promisify(fs.lstat);

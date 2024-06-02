@@ -1,6 +1,6 @@
 import path from 'node:path';
-import { PossibleSpaces } from 'helpers/types';
-import { getSpaceTypeToPathDict } from 'helpers/dicts';
+import { PossibleSpaces } from 'lib/types';
+import { getSpaceTypeToPathDict } from 'lib/dicts';
 
 export const getPaths = (space: PossibleSpaces, pathSegments: string[]) => {
   const rootPath = getSpaceTypeToPathDict()[space];

@@ -1,6 +1,7 @@
 import cloneDeep from 'lodash/cloneDeep';
+import { State } from './types';
 
-const initialState = {
+const initialState: State = {
   globalGoal: '',
   previousSummary: '',
   errors: [] as string[],

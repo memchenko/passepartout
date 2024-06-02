@@ -4,7 +4,7 @@ import * as rulesMenu from 'cli/setup-work/menus/rules';
 import * as pathsMenu from 'cli/setup-work/menus/paths';
 import { state } from 'cli/setup-work/state';
 import { render } from 'cli/setup-work/common';
-import { runTerminalEditor } from 'helpers/terminalEditor';
+import { runTerminalEditor } from 'lib/terminalEditor';
 
 const readFileAsync = promisify(fs.readFile);
 

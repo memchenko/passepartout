@@ -4,7 +4,6 @@
     "baseUrl": "./",
     "paths": {
       "*": ["*/index"],
-      "helpers/*": ["./src/helpers/*"],
       "tools/*": ["./src/tools/*"],
       "services/*": ["./src/services/*"],
       "actors/*": ["./src/actors/*"],

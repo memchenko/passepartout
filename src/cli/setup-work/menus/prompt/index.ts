@@ -1,7 +1,7 @@
 import prompts from 'prompts';
 import { state } from 'cli/setup-work/state';
 import { formatTextAsConfirmed, extractVariables } from 'cli/setup-work/common';
-import { assertIsNotNil } from 'helpers/type-guards';
+import { assertIsNotNil } from 'lib/type-guards';
 
 export type PossibleOptions = 'write' | 'variables' | 'back';
 

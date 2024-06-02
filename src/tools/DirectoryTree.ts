@@ -4,9 +4,9 @@ import treeCli from 'tree-cli';
 import * as z from 'zod';
 import { promisify } from 'node:util';
 
-import { isError } from 'helpers/type-guards';
-import { possibleSpaces } from 'helpers/types';
-import { getPaths } from 'helpers/paths';
+import { isError } from 'lib/type-guards';
+import { possibleSpaces } from 'lib/types';
+import { getPaths } from 'lib/paths';
 
 const lstatAsync = promisify(fs.lstat);
 

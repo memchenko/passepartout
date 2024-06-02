@@ -1,5 +1,5 @@
 import * as z from 'zod';
-import { AllKeys, PickType } from 'helpers/types';
+import { AllKeys, PickType } from 'lib/types';
 
 export const isError = (value: unknown): value is Error => {
   return value instanceof Error;

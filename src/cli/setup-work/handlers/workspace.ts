@@ -1,8 +1,8 @@
 import { state } from 'cli/setup-work/state';
 import { UniversalPreset } from 'cli/setup-work/types';
-import { runTerminalEditor } from 'helpers/terminalEditor';
-import { workspaceSpacePathSchema, WORKSPACE_SPACE } from 'helpers/types';
-import { assertIsNotNil, assertMatchSchema } from 'helpers/type-guards';
+import { runTerminalEditor } from 'lib/terminalEditor';
+import { workspaceSpacePathSchema, WORKSPACE_SPACE } from 'lib/types';
+import { assertIsNotNil, assertMatchSchema } from 'lib/type-guards';
 
 export const processWorkspace = async (): Promise<void> => {
   const value = `${WORKSPACE_SPACE}://${await runTerminalEditor()}`;
