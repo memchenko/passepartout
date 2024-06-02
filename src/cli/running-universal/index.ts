@@ -6,8 +6,9 @@ import * as summarizer from 'actors/summarizer';
 import { buildPresetRunner } from 'presets/universal';
 import { state } from 'presets/universal/state';
 import { writeLog } from 'lib/log';
+import { displaySection } from 'lib/cli';
 import { runUser } from './handlers/whatsNext';
-import { wrapActorRunner, displayGlobalGoal, displaySummary } from './common';
+import { wrapActorRunner, displaySummary } from './common';
 
 export const runExecutor = wrapActorRunner(executor.run, {
   runnerName: 'Executor',
@@ -56,7 +57,7 @@ export const run = buildPresetRunner(
   {
     async beforeCycle() {
       console.clear();
-      displayGlobalGoal(state.globalGoal);
+      displaySection('The goal', state.globalGoal);
       await displaySummary(state.previousSummary);
     },
     async afterCycle() {

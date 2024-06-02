@@ -1,13 +1,10 @@
 import { DynamicStructuredTool } from '@langchain/core/tools';
-import fs from 'node:fs';
-import { promisify } from 'node:util';
 import * as z from 'zod';
 
 import { possibleSpaces } from 'lib/schemas';
 import { isError } from 'lib/type-guards';
 import { getPaths } from 'lib/paths';
-
-const writeFileAsync = promisify(fs.writeFile);
+import { writeFileAsync } from 'lib/promisified';
 
 export const writeFile = new DynamicStructuredTool({
   name: 'write-file',

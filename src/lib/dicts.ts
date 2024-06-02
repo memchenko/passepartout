@@ -7,4 +7,6 @@ export const getSpaceTypeToPathDict = (): Record<PossibleSpaces, string> => ({
 
 export const presetTypeToActorsList: Partial<Record<PresetType, Actors[]>> = {
   universal: ['planner', 'executor', 'supervisor', 'miner', 'summarizer'],
+  writer: ['executor'],
+  editor: ['executor'],
 };

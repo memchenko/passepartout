@@ -1,18 +1,8 @@
-import chalk from 'chalk';
 import { marked } from 'marked';
-import ora from 'ora';
 import { writeLog } from 'lib/log';
+import { displayFailure, displaySpinner, displaySuccess, displayTitle, displaySection } from 'lib/cli';
 import { assertIsNotNil, isError, isNotNil } from 'lib/type-guards';
 import { DISPLAYED_SUMMARY_LENGTH } from './constants';
-
-export const displayTitle = (title: string) => {
-  console.log(chalk.black.bold.bgWhite(title.toUpperCase()));
-};
-
-export const displayGlobalGoal = (text: string) => {
-  displayTitle('The task');
-  console.log(text);
-};
 
 export const displaySummary = async (text: string) => {
   const length = text.length;
@@ -23,25 +13,8 @@ export const displaySummary = async (text: string) => {
     summaryDisplayed += `\n... (${length - DISPLAYED_SUMMARY_LENGTH} more) ...`;
   }
 
-  displayTitle('Insights');
-  console.log(await marked.parse(summaryDisplayed));
+  displaySection('Insights', await marked.parse(summaryDisplayed));
 };
-
-export const displaySpinner = (text: string) => {
-  return ora({
-    text: chalk.italic(text),
-    spinner: 'point',
-    color: 'cyan',
-  }).start();
-};
-
-export function displaySuccess(this: ora.Ora, text: string) {
-  this.succeed(chalk.reset.green(text));
-}
-
-export function displayFailure(this: ora.Ora, text: string) {
-  this.fail(chalk.reset.red(text));
-}
 
 export const wrapActorRunner = <Fn extends (...args: any[]) => Promise<ActorResponse>>(
   runActor: Fn,

@@ -5,7 +5,7 @@ const initialState: State = {
   preset: null,
   prompt: null,
   numberOfTasks: 1,
-  rules: null,
+  rules: {},
   settings: {
     controlFrequency: -1,
   },

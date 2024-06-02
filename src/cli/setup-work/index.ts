@@ -5,6 +5,7 @@ import { state } from './state';
 
 export const start = async () => {
   while (true) {
+    console.clear();
     await choosePreset();
     await setupPreset();
 
