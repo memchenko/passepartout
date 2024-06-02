@@ -1,18 +1,18 @@
-import { Actor } from './types';
+import { Preset } from './types';
 
-export function assertActor<A extends Actor<ActorType, any> = Actor<ActorType, any>>(
-  actor: any,
-  type?: ActorType,
-): asserts actor is A {
+export function assertPreset<P extends Preset<PresetType, any> = Preset<PresetType, any>>(
+  preset: any,
+  type?: PresetType,
+): asserts preset is P {
   if (!type) {
-    if (!actor.type) {
-      throw new Error('Actor is not selected.');
+    if (!preset.type) {
+      throw new Error('Preset is not selected.');
     } else {
       return;
     }
   }
 
-  if (actor.type !== type) {
-    throw new Error('Incorrect actor state.');
+  if (preset.type !== type) {
+    throw new Error('Incorrect preset state.');
   }
 }

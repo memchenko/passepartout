@@ -1,10 +1,10 @@
 import prompts from 'prompts';
 
-export const render = async (): Promise<ActorType> => {
+export const render = async (): Promise<PresetType> => {
   const answer = await prompts({
     type: 'select',
-    name: 'actor',
-    message: 'Select assistant type',
+    name: 'preset',
+    message: 'Select preset to execute',
     choices: [
       {
         title: 'Universal',
@@ -25,5 +25,5 @@ export const render = async (): Promise<ActorType> => {
     ],
   });
 
-  return answer.actor;
+  return answer.preset;
 };

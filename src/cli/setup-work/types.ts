@@ -1,5 +1,5 @@
 export type State = {
-  actor: WriterActor | EditorActor | ResearcherActor | UniversalActor | null;
+  preset: WriterPreset | EditorPreset | ResearcherPreset | UniversalPreset | null;
   prompt: Prompt | null;
   numberOfTasks: number;
   rules: string | null;
@@ -11,30 +11,30 @@ export type Prompt = {
   variables: Record<string, string[]> | null;
 };
 
-export type Actor<A extends ActorType, P extends {}> = {
+export type Preset<A extends PresetType, P extends {}> = {
   type: A;
   parameters: P | null;
 };
 
-export type WriterActor = Actor<
+export type WriterPreset = Preset<
   'writer',
   {
     paths: string[];
   }
 >;
-export type EditorActor = Actor<
+export type EditorPreset = Preset<
   'editor',
   {
     paths: string[];
   }
 >;
-export type ResearcherActor = Actor<
+export type ResearcherPreset = Preset<
   'researcher',
   {
     knowledgeSrc: KnowledgeSource;
   }
 >;
-export type UniversalActor = Actor<
+export type UniversalPreset = Preset<
   'universal',
   {
     knowledgeSrc: KnowledgeSource | null;

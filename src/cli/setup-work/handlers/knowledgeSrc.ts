@@ -1,7 +1,7 @@
 import * as knowledgeSrc from 'cli/setup-work/menus/knowledge-src';
 import { render } from 'cli/setup-work/common';
 import { state } from 'cli/setup-work/state';
-import { UniversalActor } from 'cli/setup-work/types';
+import { UniversalPreset } from 'cli/setup-work/types';
 import { runTerminalEditor } from 'helpers/terminalEditor';
 import { assertIsNotNil } from 'helpers/type-guards';
 
@@ -22,8 +22,8 @@ export const processKnowledgeSrc = async (): Promise<void> => {
         break;
       }
       case 'user': {
-        assertIsNotNil(state.actor, 'Actor was not specified.');
-        state.actor.parameters = {
+        assertIsNotNil(state.preset, 'Actor was not specified.');
+        state.preset.parameters = {
           knowledgeSrc: {
             type: 'user',
             value: null,
@@ -36,19 +36,19 @@ export const processKnowledgeSrc = async (): Promise<void> => {
 };
 
 const setWebSource = async (value: string) => {
-  assertIsNotNil(state.actor, 'Actor was not specified.');
+  assertIsNotNil(state.preset, 'Actor was not specified.');
 
-  const params = (state.actor.parameters ?? {}) as Exclude<UniversalActor['parameters'], null>;
+  const params = (state.preset.parameters ?? {}) as Exclude<UniversalPreset['parameters'], null>;
 
   params.knowledgeSrc = { type: 'web', value };
-  state.actor.parameters = params;
+  state.preset.parameters = params;
 };
 
 const setFileSystemSource = async (value: string, type: 'file' | 'directory') => {
-  assertIsNotNil(state.actor, 'Actor was not specified.');
+  assertIsNotNil(state.preset, 'Actor was not specified.');
 
-  const params = (state.actor.parameters ?? {}) as Exclude<UniversalActor['parameters'], null>;
+  const params = (state.preset.parameters ?? {}) as Exclude<UniversalPreset['parameters'], null>;
 
   params.knowledgeSrc = { type, value };
-  state.actor.parameters = params;
+  state.preset.parameters = params;
 };

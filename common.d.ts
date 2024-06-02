@@ -1,4 +1,4 @@
-declare type ActorType = 'universal' | 'writer' | 'editor' | 'researcher';
+declare type PresetType = 'universal' | 'writer' | 'editor' | 'researcher';
 
 declare type HTTPProtocol = 'http' | 'https';
 

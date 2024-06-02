@@ -1,4 +1,4 @@
-import * as actorMenu from 'cli/setup-work/menus/actor-menu';
+import * as presetMenu from 'cli/setup-work/menus/preset-menu';
 import { processPrompt } from 'cli/setup-work/handlers/prompt';
 import { processKnowledgeSrc } from 'cli/setup-work/handlers/knowledgeSrc';
 import { processWorkspace } from 'cli/setup-work/handlers/workspace';
@@ -8,13 +8,13 @@ import { processSettings } from 'cli/setup-work/handlers/settings';
 import { render } from 'cli/setup-work/common';
 import { resetState } from 'cli/setup-work/state';
 
-export async function setupActor() {
-  let actorMenuOption: actorMenu.PossibleOptions;
+export async function setupPreset() {
+  let option: presetMenu.PossibleOptions;
 
   do {
-    actorMenuOption = await render(actorMenu);
+    option = await render(presetMenu);
 
-    switch (actorMenuOption) {
+    switch (option) {
       case 'back': {
         resetState();
         return;
@@ -44,5 +44,5 @@ export async function setupActor() {
         break;
       }
     }
-  } while (actorMenuOption !== 'start');
+  } while (option !== 'start');
 }

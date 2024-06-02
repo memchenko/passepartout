@@ -2,12 +2,12 @@ import prompts from 'prompts';
 import { formatTextAsConfirmed } from 'cli/setup-work/common';
 import { state } from 'cli/setup-work/state';
 import { assertIsDefined } from 'helpers/type-guards';
-import { UniversalActor } from 'cli/setup-work/types';
+import { UniversalPreset } from 'cli/setup-work/types';
 
 export type PossibleOptions = 'directory' | 'file' | 'web' | 'user' | 'ai' | 'back';
 
 export const render = async (): Promise<PossibleOptions> => {
-  const parameters = state.actor?.parameters as UniversalActor['parameters'];
+  const parameters = state.preset?.parameters as UniversalPreset['parameters'];
   assertIsDefined(parameters);
 
   const answer = await prompts({

@@ -1,15 +1,15 @@
-import { chooseActor } from './workflow/chooseActor';
-import { setupActor } from './workflow/setupActor';
-import { runActor } from './workflow/runActor';
+import { choosePreset } from './workflow/choosePreset';
+import { setupPreset } from './workflow/setupPreset';
+import { runPreset } from './workflow/runPreset';
 import { state } from './state';
 
 export const start = async () => {
   while (true) {
-    await chooseActor();
-    await setupActor();
+    await choosePreset();
+    await setupPreset();
 
-    if (state.actor !== null) {
-      await runActor();
+    if (state.preset !== null) {
+      await runPreset();
     }
   }
 };

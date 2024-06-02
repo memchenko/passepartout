@@ -5,7 +5,7 @@ import * as pathsMenu from 'cli/setup-work/menus/paths';
 import { render } from 'cli/setup-work/common';
 
 export const processPaths = async (): Promise<void> => {
-  assertIsNotNil(state.actor);
+  assertIsNotNil(state.preset);
 
   const paths = (await render(pathsMenu)).map((value) => {
     if (path.isAbsolute(value)) {
@@ -15,6 +15,6 @@ export const processPaths = async (): Promise<void> => {
     }
   });
 
-  state.actor.parameters = { paths };
+  state.preset.parameters = { paths };
   state.numberOfTasks = paths.length;
 };

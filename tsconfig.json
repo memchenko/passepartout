@@ -8,7 +8,9 @@
       "tools/*": ["./src/tools/*"],
       "services/*": ["./src/services/*"],
       "actors/*": ["./src/actors/*"],
-      "cli/*": ["./src/cli/*"]
+      "presets/*": ["./src/presets/*"],
+      "cli/*": ["./src/cli/*"],
+      "lib/*": ["./src/lib/*"]
     },
     "outDir": "./build",
     "typeRoots": ["./env.d.ts", "./common.d.ts"]

@@ -3,18 +3,18 @@ import { assertIsNotNil, assertHasProperty } from 'helpers/type-guards';
 import * as universalActor from 'actors/universal';
 import { applyVariables } from 'cli/setup-work/common';
 
-export async function runActor() {
-  assertIsNotNil(state.actor);
+export async function runPreset() {
+  assertIsNotNil(state.preset);
 
-  switch (state.actor.type) {
+  switch (state.preset.type) {
     case 'universal': {
-      await runUniversalActor();
+      await runUniversalPreset();
     }
   }
 }
 
-async function runUniversalActor() {
-  const parameters = state.actor?.parameters;
+async function runUniversalPreset() {
+  const parameters = state.preset?.parameters;
   assertIsNotNil(parameters);
   assertHasProperty(parameters, 'knowledgeSrc');
   assertHasProperty(parameters, 'workspaceFolder');

@@ -2,7 +2,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import { State } from './types';
 
 const initialState: State = {
-  actor: null,
+  preset: null,
   prompt: null,
   numberOfTasks: 1,
   rules: null,
