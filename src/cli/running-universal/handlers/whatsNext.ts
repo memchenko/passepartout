@@ -10,9 +10,6 @@ export const runUser = async () => {
     case 'finish': {
       return;
     }
-    case 'goal': {
-      return processEditGoal();
-    }
     case 'insight': {
       return processEditInsight();
     }
@@ -23,13 +20,6 @@ export const runUser = async () => {
       throw new Error(`Unknown option: ${answer}`);
     }
   }
-};
-
-const processEditGoal = async () => {
-  state.globalGoal = await runTerminalEditor(state.globalGoal);
-  state.previousSummary = '';
-  state.cycles = 0;
-  state.startNextCycleFrom = 'planner';
 };
 
 const processContinue = async () => {

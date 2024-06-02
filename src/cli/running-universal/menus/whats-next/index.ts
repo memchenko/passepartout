@@ -9,7 +9,6 @@ export const render = async (): Promise<PossibleOptions> => {
     message: 'Choose action:',
     choices: [
       { title: 'Continue', value: 'continue' },
-      { title: 'Edit goal', value: 'goal' },
       { title: 'Edit insights', value: 'insight' },
       { title: 'Finish', value: 'finish' },
     ],

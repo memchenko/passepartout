@@ -18,7 +18,7 @@ export const render = async (): Promise<PossibleOptions> => {
   ];
   const hasVariables = extractVariables(state.prompt?.value ?? '').length > 0;
 
-  if (hasVariables) {
+  if (hasVariables && state.preset?.type === 'universal') {
     choices.splice(1, 0, {
       title: formatTextAsConfirmed('Specify variables *', state.prompt?.variables),
       value: 'variables',
