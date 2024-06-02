@@ -1,9 +1,12 @@
+import merge from 'lodash/merge';
+import { Object as O } from 'ts-toolbelt';
 import * as executor from 'actors/executor/types';
 import * as miner from 'actors/miner/types';
 import * as planner from 'actors/planner/types';
 import * as supervisor from 'actors/supervisor/types';
 import * as summarizer from 'actors/summarizer/types';
 import { state, resetState } from './state';
+import { config, resetConfig } from './config';
 
 export type Flow = Record<Actors, () => Promise<unknown>>;
 
@@ -33,23 +36,28 @@ const buildFlow = (runners: Runners): Flow => {
         insights: state.previousSummary,
         cycle: state.cycles,
         errors: state.errors,
+        rules: config.rules.planner,
       });
 
       return flow.executor();
     },
     executor: async () => {
-      state.results.execution = await runExecutor(state.results.planning);
+      state.results.execution = await runExecutor({
+        actionRequest: state.results.planning,
+        rules: config.rules.executor,
+      });
       return flow.supervisor();
     },
     supervisor: async () => {
-      const { globalGoal, settings, cycles } = state;
+      const { globalGoal, cycles } = state;
 
       state.results.decision = await runSupervisor({
         goal: globalGoal,
         latestAction: state.results.execution,
+        rules: config.rules.supervisor,
       });
 
-      if (cycles % settings.controlFrequency === settings.controlFrequency - 1) {
+      if (cycles % config.controlFrequency === config.controlFrequency - 1) {
         return flow.user();
       }
 
@@ -67,6 +75,7 @@ const buildFlow = (runners: Runners): Flow => {
         task: state.globalGoal,
         action: state.results.planning,
         actionResult: state.results.execution,
+        rules: config.rules.miner,
       });
       return flow.summarizer();
     },
@@ -76,6 +85,7 @@ const buildFlow = (runners: Runners): Flow => {
         action: state.results.planning,
         minerResponse: state.results.mining,
         previousSummary: state.previousSummary,
+        rules: config.rules.summarizer,
       });
       state.previousSummary = state.results.summarizing;
       state.startNextCycleFrom = 'planner';
@@ -89,11 +99,12 @@ export const buildPresetRunner = (runners: Runners, lifecycle?: Lifecycle) => {
   const { runUser } = runners;
   const flow = buildFlow(runners);
 
-  return async (goal: string, settings: Partial<(typeof state)['settings']> = {}) => {
+  return async (goal: string, settings: O.Partial<typeof config, 'deep'> = {}) => {
     resetState();
+    resetConfig();
 
     state.globalGoal = goal;
-    Object.assign(state.settings, settings);
+    Object.assign(config, merge(config, settings));
 
     while (true) {
       try {

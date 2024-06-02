@@ -8,7 +8,7 @@ without any improvisations, and respond with new, updated content
 which then will be used to override the file. Given that your response
 will be written to the file without any review please avoid any irrelevant
 texts in your response.
-
+{rules}
 ## Example original file content:
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in
 libero purus. Proin eleifend tincidunt metus, at suscipit lorem

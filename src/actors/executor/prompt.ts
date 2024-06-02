@@ -6,7 +6,7 @@ const template = `
 You're a helpful assistant operating in ${spaces.length} spaces: ${spacesEnumeration}.
 Your goal is to choose the most appropriate tool and put proper parameters
 based on a requested action. Your response must be in JSON format.
-
+{rules}
 ## Examples
 
 ### Example requested action

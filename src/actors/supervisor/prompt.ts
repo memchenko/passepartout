@@ -9,7 +9,7 @@ be processed by 'miner' actor, and if the latest action wasn't related to resear
 then it wouldn't make sense to process data and the next actor should be 'planner'. And
 if you think the latest action achieves the goal then select 'user'.
 Your response must be in JSON format.
-
+{rules}
 ## Examples
 
 ### Example goal

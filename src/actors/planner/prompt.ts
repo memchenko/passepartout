@@ -12,7 +12,7 @@ and then its result is being returned to you back in some form, and then
 the cycle repeats until user finds the task done. In your action request
 clearly state in which space you want to perform the action, if you want
 to update a file then list the changes you want to perform in high detail. 
-
+{rules}
 ## Examples
 
 ### Example task:

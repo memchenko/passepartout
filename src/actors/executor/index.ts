@@ -3,12 +3,13 @@ import { assertIsNotNil } from 'lib/type-guards';
 import { mkdir, fileReader, writeFile, directoryTree, updateFile } from 'tools/index';
 import { writeLog } from 'lib/log';
 import { getExecutiveLLM } from 'lib/llm';
+import { buildRulesString } from 'lib/misc';
 import { prompt } from './prompt';
 import { Input } from './types';
 
 const toolsPromise = Promise.all([mkdir, fileReader, writeFile, directoryTree, updateFile]);
 
-export const run = async (input: Input): Promise<ActorResponse> => {
+export const run = async ({ actionRequest, rules = '' }: Input): Promise<ActorResponse> => {
   const tools = await toolsPromise;
 
   const functions = tools.map(formatToOpenAITool);
@@ -22,7 +23,8 @@ export const run = async (input: Input): Promise<ActorResponse> => {
 
   const executorResponse = await executor.invoke({
     tools: toolsFormatted,
-    action: input,
+    action: actionRequest,
+    rules: buildRulesString(rules),
   });
 
   writeLog('Executor selected tool', JSON.stringify(executorResponse, null, 2));

@@ -1,1 +1,3 @@
-export type Input = string;
+export interface Input extends ActorInput {
+  actionRequest: string;
+}

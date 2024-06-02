@@ -11,7 +11,4 @@ export type State = {
     mining: string;
     summarizing: string;
   };
-  settings: {
-    controlFrequency: number;
-  };
 };

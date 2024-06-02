@@ -14,5 +14,5 @@ const initialState: State = {
 export const state = cloneDeep(initialState);
 
 export const resetState = () => {
-  Object.assign(state, initialState);
+  Object.assign(state, cloneDeep(initialState));
 };

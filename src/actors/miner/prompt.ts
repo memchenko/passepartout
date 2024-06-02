@@ -10,7 +10,7 @@ information from the result. In your insights clearly state the space
 your insights are applying to. Please, remember that you're not a project
 manager to plan what to do next, so please don't think on what to do next -
 your job is to only find insights on the requested action.
-
+{rules}
 ## Examples
 
 ### Example high-level task

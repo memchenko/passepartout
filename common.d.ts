@@ -14,3 +14,7 @@ declare type ActorResponse = {
   response: string;
   successMessage?: string;
 };
+
+declare type ActorInput = {
+  rules?: string;
+};

@@ -12,7 +12,7 @@ performed to not miss anything important. The ideal response would be as short
 and dense summary as possible keeping all the necessary info for the next steps
 in context of the task. Avoid including in your summary the information which is
 not relevant anymore.
-
+{rules}
 ## Examples 
 
 ### Example high-level task

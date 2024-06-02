@@ -2,7 +2,7 @@ export type State = {
   preset: WriterPreset | EditorPreset | ResearcherPreset | UniversalPreset | null;
   prompt: Prompt | null;
   numberOfTasks: number;
-  rules: string | null;
+  rules: Partial<Record<Exclude<Actors, 'user'>, string>>;
   settings: Settings;
 };
 

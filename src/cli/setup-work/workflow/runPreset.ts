@@ -31,6 +31,7 @@ async function runUniversalPreset() {
 
     await universalPreset.run(goal, {
       controlFrequency: state.settings.controlFrequency,
+      rules: state.rules,
     });
 
     process.env.PROJECT_PATH = initialProjectPath;
