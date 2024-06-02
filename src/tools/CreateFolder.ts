@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import { promisify } from 'node:util';
 import * as z from 'zod';
 
-import { possibleSpaces } from 'lib/types';
+import { possibleSpaces } from 'lib/schemas';
 import { getPaths } from 'lib/paths';
 
 const mkdirAsync = promisify(fs.mkdir);

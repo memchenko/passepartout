@@ -5,7 +5,7 @@ import * as z from 'zod';
 import { promisify } from 'node:util';
 
 import { isError } from 'lib/type-guards';
-import { possibleSpaces } from 'lib/types';
+import { possibleSpaces } from 'lib/schemas';
 import { getPaths } from 'lib/paths';
 
 const lstatAsync = promisify(fs.lstat);

@@ -2,58 +2,14 @@ import { DynamicStructuredTool } from '@langchain/core/tools';
 import fs from 'node:fs';
 import { promisify } from 'node:util';
 import * as z from 'zod';
-import { ChatOpenAI } from '@langchain/openai';
-import { ChatPromptTemplate } from '@langchain/core/prompts';
-import { StringOutputParser } from '@langchain/core/output_parsers';
-
-import { possibleSpaces } from 'lib/types';
+import * as editor from 'actors/editor';
+import { possibleSpaces } from 'lib/schemas';
 import { isError } from 'lib/type-guards';
 import { getPaths } from 'lib/paths';
 
 const writeFileAsync = promisify(fs.writeFile);
 const readFileAsync = promisify(fs.readFile);
 const lstatAsync = promisify(fs.lstat);
-
-const llm = new ChatOpenAI({
-  temperature: 0.1,
-  apiKey: process.env.API_KEY,
-  model: 'gpt-4o',
-});
-
-const chain = ChatPromptTemplate.fromTemplate(
-  `
-You're an assistant which updates files. Given a list of updates and
-the original content of the file you have to apply these updates 
-carefull to the content, followin the instructions exactly as given
-without any improvisations, and respond with new, updated content
-which then will be used to override the file. Given that your response
-will be written to the file without any review please avoid any irrelevant
-texts in your response.
-
-## Example original file content:
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in
-libero purus. Proin eleifend tincidunt metus, at suscipit lorem
-sagittis sed.
-
-## Example updates list:
-Replace 'Lorem ipsum' with 'This is example change'. And remove 
-'Nullam in libero purus' sentence.
-
-## Your example response:
-This is example change dolor sit amet, consectetur adipiscing elit.
-Proin eleifend tincidunt metus, at suscipit lorem sagittis sed.
-
-Begin!
-
-## Original file content:
-{content}
-
-## Updates to apply:
-{updates}
-`,
-)
-  .pipe(llm)
-  .pipe(new StringOutputParser());
 
 export const updateFile = new DynamicStructuredTool({
   name: 'update-file',
@@ -72,10 +28,9 @@ export const updateFile = new DynamicStructuredTool({
       await lstatAsync(fullPath);
 
       const content = await readFileAsync(fullPath, 'utf-8');
+      const { response } = await editor.run({ content, updates });
 
-      const newContent = await chain.invoke({ content, updates });
-
-      await writeFileAsync(fullPath, newContent, {
+      await writeFileAsync(fullPath, response, {
         encoding: 'utf-8',
         flag: 'w',
       });
@@ -83,7 +38,7 @@ export const updateFile = new DynamicStructuredTool({
       return `
 File '${relativePath}' updated successfully in the space '${space}'.
 \n\n ## New content of the file is:
-\n\`\`\`${newContent}\`\`\``;
+\n\`\`\`${response}\`\`\``;
     } catch (err) {
       if (isError(err)) {
         if (err.message.includes('ENOENT: no such file or directory, lstat')) {
