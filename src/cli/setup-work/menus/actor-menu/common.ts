@@ -1,5 +1,7 @@
 import { PromptObject } from 'prompts';
+import mergeWith from 'lodash/mergeWith';
 import merge from 'lodash/merge';
+import cloneDeep from 'lodash/cloneDeep';
 import { Object } from 'ts-toolbelt';
 import { state } from 'cli/setup-work/state';
 import { formatTextAsConfirmed } from 'cli/setup-work/common';
@@ -35,5 +37,15 @@ const buildCommonConfig = (): PromptObject<'option'> => ({
 export const buildConfig = (
   partialConfig: Object.Partial<PromptObject, 'deep'>,
 ): ReturnType<typeof buildCommonConfig> => {
-  return merge(buildCommonConfig(), partialConfig);
+  const result = mergeWith(buildCommonConfig(), partialConfig, (objValue: unknown, srcValue: unknown) => {
+    if (Array.isArray(objValue) && Array.isArray(srcValue)) {
+      const result = cloneDeep(objValue);
+      result.splice(2, 0, ...srcValue);
+      return result;
+    }
+
+    return merge(objValue, srcValue);
+  });
+
+  return result;
 };
