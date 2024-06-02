@@ -3,8 +3,11 @@ import * as miner from 'actors/miner';
 import * as planner from 'actors/planner';
 import * as supervisor from 'actors/supervisor';
 import * as summarizer from 'actors/summarizer';
-import { wrapActorRunner } from './common';
 import { buildPresetRunner } from 'presets/universal';
+import { state } from 'presets/universal/state';
+import { writeLog } from 'lib/log';
+import { runUser } from './handlers/whatsNext';
+import { wrapActorRunner, displayGlobalGoal, displaySummary } from './common';
 
 export const runExecutor = wrapActorRunner(executor.run, {
   runnerName: 'Executor',
@@ -41,11 +44,23 @@ export const runSummarizer = wrapActorRunner(summarizer.run, {
   failureText: 'Summarizing failed.',
 });
 
-export const run = buildPresetRunner({
-  runExecutor,
-  runMiner,
-  runPlanner,
-  runSummarizer,
-  runSupervisor,
-  runUser: () => {},
-});
+export const run = buildPresetRunner(
+  {
+    runExecutor,
+    runMiner,
+    runPlanner,
+    runSummarizer,
+    runSupervisor,
+    runUser,
+  },
+  {
+    async beforeCycle() {
+      console.clear();
+      displayGlobalGoal(state.globalGoal);
+      await displaySummary(state.previousSummary);
+    },
+    async afterCycle() {
+      writeLog('State after cycle', JSON.stringify(state, null, 2));
+    },
+  },
+);

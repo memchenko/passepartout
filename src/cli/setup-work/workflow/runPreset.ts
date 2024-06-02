@@ -1,6 +1,6 @@
 import { state } from 'cli/setup-work/state';
 import { assertIsNotNil, assertHasProperty } from 'lib/type-guards';
-import * as universalActor from 'actors/universal';
+import * as universalPreset from 'cli/running-universal';
 import { applyVariables } from 'cli/setup-work/common';
 
 export async function runPreset() {
@@ -29,7 +29,7 @@ async function runUniversalPreset() {
     process.env.PROJECT_PATH = parameters.knowledgeSrc.value;
     process.env.RESULT_PATH = parameters.workspaceFolder;
 
-    await universalActor.run(goal, {
+    await universalPreset.run(goal, {
       controlFrequency: state.settings.controlFrequency,
     });
 

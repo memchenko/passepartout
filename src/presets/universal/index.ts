@@ -15,7 +15,7 @@ type Runners = {
   runSupervisor: Runner<supervisor.Input>;
   runSummarizer: Runner<summarizer.Input>;
   runMiner: Runner<miner.Input>;
-  runUser: Runner<Flow>;
+  runUser: () => Promise<void>;
 };
 
 type Lifecycle = {
@@ -60,7 +60,7 @@ const buildFlow = (runners: Runners): Flow => {
       return flow[state.results.decision as 'miner']();
     },
     user: async () => {
-      await runUser(flow);
+      await runUser();
     },
     miner: async () => {
       state.results.mining = await runMiner({
@@ -97,11 +97,6 @@ export const buildPresetRunner = (runners: Runners, lifecycle?: Lifecycle) => {
 
     while (true) {
       try {
-        // console.clear();
-
-        // displayGlobalGoal();
-        // await displayPreviousSummary();
-
         await lifecycle?.beforeCycle?.();
 
         const fn = flow[state.startNextCycleFrom];
@@ -114,10 +109,9 @@ export const buildPresetRunner = (runners: Runners, lifecycle?: Lifecycle) => {
       } catch (err) {
         if (err instanceof Error) {
           state.errors.push(err.message);
-          await runUser(flow);
+          await runUser();
         }
       } finally {
-        // writeLog('State after cycle', JSON.stringify(state, null, 2));
         await lifecycle?.afterCycle?.();
 
         state.cycles++;
