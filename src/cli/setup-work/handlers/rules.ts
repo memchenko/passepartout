@@ -15,14 +15,18 @@ export const processRules = async () => {
     const [actor, option] = await render(rulesMenu);
     rulesOption = option;
 
-    switch (rulesOption) {
-      case 'write': {
-        state.rules[actor] = await runTerminalEditor();
-      }
-      case 'load': {
-        const paths = await render(pathsMenu);
-        const contents = await Promise.all(paths.map((path) => readFileAsync(path, 'utf-8')));
-        state.rules[actor] = contents.join('\n');
+    if (actor) {
+      switch (rulesOption) {
+        case 'write': {
+          state.rules[actor] = await runTerminalEditor();
+          break;
+        }
+        case 'load': {
+          const paths = await render(pathsMenu);
+          const contents = await Promise.all(paths.map((path) => readFileAsync(path, 'utf-8')));
+          state.rules[actor] = contents.join('\n');
+          break;
+        }
       }
     }
   } while (rulesOption !== 'back');
