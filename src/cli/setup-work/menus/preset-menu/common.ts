@@ -2,6 +2,7 @@ import { PromptObject } from 'prompts';
 import mergeWith from 'lodash/mergeWith';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
+import isEmpty from 'lodash/isEmpty';
 import { Object } from 'ts-toolbelt';
 import { state } from 'cli/setup-work/state';
 import { formatTextAsConfirmed } from 'cli/setup-work/common';
@@ -16,7 +17,7 @@ const buildCommonConfig = (): PromptObject<'option'> => ({
       value: 'prompt',
     },
     {
-      title: formatTextAsConfirmed('Set rules', state.rules),
+      title: formatTextAsConfirmed('Set rules', state.rules, () => !isEmpty(state.rules)),
       value: 'rules',
     },
     {
