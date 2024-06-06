@@ -1,7 +1,8 @@
 import { state } from 'cli/setup-work/state';
 import { UniversalPreset } from 'cli/setup-work/types';
 import { runTerminalEditor } from 'lib/terminalEditor';
-import { workspaceSpacePathSchema, WORKSPACE_SPACE } from 'lib/types';
+import { WORKSPACE_SPACE } from 'lib/constants';
+import { workspaceSpacePathSchema } from 'lib/schemas';
 import { assertIsNotNil, assertMatchSchema } from 'lib/type-guards';
 
 export const processWorkspace = async (): Promise<void> => {
