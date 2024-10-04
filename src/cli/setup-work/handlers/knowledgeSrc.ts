@@ -40,7 +40,7 @@ const setWebSource = async (value: string) => {
 
   const params = (state.preset.parameters ?? {}) as Exclude<UniversalPreset['parameters'], null>;
 
-  params.knowledgeSrc = { type: 'web', value };
+  params.knowledgeSrc = { type: 'web', value: value.trim() };
   state.preset.parameters = params;
 };
 
@@ -49,6 +49,6 @@ const setFileSystemSource = async (value: string, type: 'file' | 'directory') =>
 
   const params = (state.preset.parameters ?? {}) as Exclude<UniversalPreset['parameters'], null>;
 
-  params.knowledgeSrc = { type, value };
+  params.knowledgeSrc = { type, value: value.trim() };
   state.preset.parameters = params;
 };

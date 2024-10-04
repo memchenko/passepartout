@@ -6,6 +6,7 @@ import * as z from 'zod';
 import { possibleSpaces } from 'lib/schemas';
 import { isError } from 'lib/type-guards';
 import { getPaths } from 'lib/paths';
+import { writeLog } from 'lib/log';
 
 const readFileAsync = promisify(fs.readFile);
 const lstatAsync = promisify(fs.lstat);
@@ -21,6 +22,7 @@ export const fileReader = new DynamicStructuredTool({
     const { fullPath, relativePath } = getPaths(space, filePathSegments);
 
     try {
+      writeLog('Trying to read file', fullPath, 'default');
       await lstatAsync(fullPath);
 
       const result = await readFileAsync(fullPath, {

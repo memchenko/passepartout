@@ -14,11 +14,21 @@ export const formatTextAsConfirmed = (title: string, value: unknown, shouldForma
 };
 
 export const extractVariables = (text: string) => {
-  return text.match(variablesRegex) ?? [];
+  return (text.match(variablesRegex) ?? []).map((entry) => entry.slice(1, -1));
+};
+
+const needsVariables = () => {
+  const variables = extractVariables(state.prompt?.value ?? '');
+
+  return variables.length > 0;
 };
 
 export const applyVariables = () => {
-  assertIsNotNil(state.prompt?.variables, 'No variables for prompt specified.');
+  assertIsNotNil(state.prompt?.value, 'Prompt is not specified!');
+
+  if (needsVariables()) {
+    assertIsNotNil(state.prompt?.variables, 'No variables for prompt specified.');
+  }
 
   let prompt = state.prompt.value;
 
@@ -26,7 +36,7 @@ export const applyVariables = () => {
     const value = values.shift();
     assertIsNotNil(value, `No value for variable "${key}"`);
 
-    prompt = prompt.replace(`{${key}}`, value);
+    prompt = prompt.replaceAll(`{${key}}`, value);
   });
 
   return prompt;

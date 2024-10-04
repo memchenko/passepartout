@@ -33,7 +33,7 @@ export const runPlanner = wrapActorRunner(planner.run, {
 
 export const runSupervisor = wrapActorRunner(supervisor.run, {
   runnerName: 'Supervisor',
-  startText: "Diciding who's next...",
+  startText: "Deciding who's next...",
   successText: 'Next actor is selected.',
   failureText: 'Decision failed.',
 });

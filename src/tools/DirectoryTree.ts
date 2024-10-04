@@ -26,10 +26,13 @@ export const directoryTree = new DynamicStructuredTool({
 
       const result = await treeCli({
         base: fullPath,
-        l: 5,
+        l: 1,
       });
+      const lines = result.report.split('\n');
+      const folderPath = `/${directoryPathSegments.join('/')}`;
+      lines.splice(0, 1, folderPath);
 
-      return result.report;
+      return lines.join('\n');
     } catch (err) {
       if (isError(err) && err.message.includes('ENOENT: no such file or directory, lstat')) {
         throw new Error(`The file '${relativePath}' doesn't exist in the '${space}' space.`);

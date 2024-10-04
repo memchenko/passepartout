@@ -5,8 +5,8 @@ import * as miner from 'actors/miner/types';
 import * as planner from 'actors/planner/types';
 import * as supervisor from 'actors/supervisor/types';
 import * as summarizer from 'actors/summarizer/types';
-import { state, resetState } from './state';
-import { config, resetConfig } from './config';
+import { state } from './state';
+import { config } from './config';
 
 export type Flow = Record<Actors, () => Promise<unknown>>;
 
@@ -37,6 +37,7 @@ const buildFlow = (runners: Runners): Flow => {
         cycle: state.cycles,
         errors: state.errors,
         rules: config.rules.planner,
+        previousAction: state.previousActionRequested,
       });
 
       return flow.executor();
@@ -100,9 +101,6 @@ export const buildPresetRunner = (runners: Runners, lifecycle?: Lifecycle) => {
   const flow = buildFlow(runners);
 
   return async (goal: string, settings: O.Partial<typeof config, 'deep'> = {}) => {
-    resetState();
-    resetConfig();
-
     state.globalGoal = goal;
     Object.assign(config, merge(config, settings));
 
@@ -128,9 +126,14 @@ export const buildPresetRunner = (runners: Runners, lifecycle?: Lifecycle) => {
         state.cycles++;
 
         if (state.startNextCycleFrom === 'planner') {
+          state.previousActionRequested = state.results.planning;
           Object.keys(state.results).forEach((key) => {
             state.results[key as keyof typeof state.results] = '';
           });
+        }
+
+        if (state.finished) {
+          return;
         }
       }
     }

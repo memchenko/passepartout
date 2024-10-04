@@ -7,7 +7,14 @@ import { Input } from './types';
 
 export const planner = prompt.pipe(getCreativeLLM()).pipe(new StringOutputParser());
 
-export const run = async ({ task, insights, cycle, errors, rules = '' }: Input): Promise<ActorResponse> => {
+export const run = async ({
+  task,
+  insights,
+  cycle,
+  errors,
+  rules = '',
+  previousAction,
+}: Input): Promise<ActorResponse> => {
   return {
     response: await planner.invoke({
       task,
@@ -15,6 +22,7 @@ export const run = async ({ task, insights, cycle, errors, rules = '' }: Input):
       insights: insights || 'There are no insights yet',
       error: errors.length > 0 ? errors.map(counted).join('\n') : 'No errors.',
       rules: buildRulesString(rules),
+      action: previousAction || "You haven't done any action yet",
     }),
   };
 };

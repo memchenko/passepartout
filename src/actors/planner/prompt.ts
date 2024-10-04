@@ -75,6 +75,9 @@ Begin!
 ## Task
 Your task is: {task}
 
+## Previous action made
+{action}
+
 ## Insights
 Your current insights are: {insights}
 

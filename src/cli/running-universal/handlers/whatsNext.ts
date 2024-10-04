@@ -8,6 +8,7 @@ export const runUser = async () => {
 
   switch (answer) {
     case 'finish': {
+      state.finished = true;
       return;
     }
     case 'insight': {

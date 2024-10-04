@@ -3,4 +3,5 @@ export interface Input extends ActorInput {
   insights: string;
   cycle: number;
   errors: string[];
+  previousAction: string | null;
 }

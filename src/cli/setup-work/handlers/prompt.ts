@@ -21,14 +21,14 @@ export const processPrompt = async (): Promise<void> => {
         const variablesJson = prompt.buildVariablesJson();
         let json = JSON.stringify(variablesJson, null, 2);
         json = await runTerminalEditor(json);
-        json = JSON.parse(json);
+        const parsedJson: Record<string, string[]> = JSON.parse(json);
 
         assertIsNotNil(state.prompt, 'Prompt was not specified.');
 
-        state.numberOfTasks = Object.values(json).reduce((acc, values) => {
+        state.numberOfTasks = Object.values(parsedJson).reduce((acc, values) => {
           return acc < values.length ? values.length : acc;
         }, Infinity);
-        state.prompt.variables = JSON.parse(json);
+        state.prompt.variables = parsedJson;
         break;
       }
     }
